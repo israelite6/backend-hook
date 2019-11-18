@@ -56,7 +56,7 @@ function LoginForm(props){
 
     React.useEffet(()=> {
 
-        props.setValidation({demo: {required: 'requied message', email: 'Message for valid email}})
+        props.setValidation({demo: {required: 'requied message', email: 'Message for valid email'}})
 
     })
     <input type="text" errors={props.errors} onChange={props.handleInput} name="demo">
@@ -100,7 +100,7 @@ function FormChild(props) => {
 
     React.useEffect(()=> {
         if(props.location.state){
-            props.setInput(props.location.state, ["email])
+            props.setInput(props.location.state, ["email"])
             //For updating purpose alone
         }
 
