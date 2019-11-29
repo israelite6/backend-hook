@@ -16,7 +16,7 @@ function FormChild(props) {
       })
         .then(res => {
           setOptions({ appLoading: false });
-          localStorage.setItem("token", res.token);
+          localStorage.setItem(options.name + "_token", res.token);
           if (props.hasOwnProperty("onSuccess")) {
             props.onSuccess(res);
           }

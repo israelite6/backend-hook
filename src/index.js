@@ -10,6 +10,7 @@ import Auth from "./components/Auth";
 import Fetch from "./components/Fetch";
 import BaseForm from "./components/BaseForm";
 import Logout from "./components/Logout";
+import { GotoEdit, ReloadPage } from "./utils/ReloadPage";
 
 export {
   AppContext,
@@ -20,5 +21,7 @@ export {
   Auth,
   Fetch,
   Logout,
-  BaseForm
+  BaseForm,
+  GotoEdit,
+  ReloadPage
 };
