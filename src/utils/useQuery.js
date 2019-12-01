@@ -1,9 +1,9 @@
 /* This compnent handle all query fetch. */
 import React from "react";
 import { useLazyQuery } from "@apollo/react-hooks";
-import { AppContext } from "./../provider/AppProvider";
+import { AppContext } from "../provider/AppProvider";
 
-export default function Query(props) {
+export function useQuery(props) {
   /* The component refreshes after api called and appLoading is set to false
     That is why we have apiCallerCounter, So when the component refresh 
     api will not fetch again. 
@@ -13,7 +13,7 @@ export default function Query(props) {
 
   const { setOptions } = React.useContext(AppContext);
 
-  const [loadFetch, { called, loading, data }] = useLazyQuery(props.query, {
+  const [query, { called, loading, data }] = useLazyQuery(props.query, {
     variables: props.hasOwnProperty("variables") ? props.variables : {},
 
     onCompleted: data => {
@@ -37,23 +37,10 @@ export default function Query(props) {
     }
   }, [loading]);
 
-  React.useEffect(() => {
-    if (!called && apiCalledCounter === 0) {
-      setApiCalledCounter(1);
-      setOptions({ appLoading: true });
-      loadFetch();
-    }
-  }, [called]);
-
-  const children = React.Children.map(props.children, (child, index) => {
-    return React.cloneElement(child, {
-      data,
-      loading
-    });
-  });
-
-  if (error) {
-    //return <Error handleRetry={handleRetry}></Error>;
-  }
-  return <React.Fragment>{children}</React.Fragment>;
+  const runQuery = () => {
+    setApiCalledCounter(1);
+    setOptions({ appLoading: true });
+    query();
+  };
+  return { runQuery, data };
 }

@@ -6,6 +6,6 @@ export function ReloadPage({ location, history }) {
   });
 }
 
-export function GotoEdit({ history, to, params }) {
+export function Redirect({ history, to, params }) {
   history.push(to, params);
 }

@@ -14,7 +14,7 @@ npm install backend-hook --save
 
 In App.js which is the entrying point for the app
 
-```javascript
+````javascript
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { AppProvider } from "backend-hook";
@@ -23,14 +23,16 @@ function App() {
   const options = {
     name: "tellit",
     graphqlUrl: "http://localhost:8081/v1/graphql",
-    authUrl: "http://localhost:8083",
+
     services: {
-      payment: "http://localhost:8083"
+      //payment: "http://localhost:8083",
+      auth: "http://localhost:8083"
     }
   };
+  const defaltCache = {};
 
   return (
-    <AppProvider options={options}>
+    <AppProvider options={options} default={defaultCache}>
       <BrowserRouter>
         <Switch>
           <Route path="/home" exact component={HomePage}></Route>
@@ -41,36 +43,7 @@ function App() {
 }
 
 export default App;
-```
 
-**Authication**
-
-```javascript
-import React from 'react'
-import {Auth} from 'backend-hook'
-
-function LoginForm(props){
-    const handleSubmit = data =>{
-        return data;
-    }
-
-    React.useEffet(()=> {
-
-        props.setValidation({demo: {required: 'requied message', email: 'Message for valid email'}})
-
-    })
-    <input type="text" errors={props.errors} onChange={props.handleInput} name="demo">
-    <button onClick={props.handleSumit(handleSubmit)}>
-}
-function Login (props){
-
-    const onSuccess  = data => {
-        //do after login successful
-    }
-
-    return (<Auth url="/login" onSuccess={onSuccess}><LoginForm></Auth>)
-}
-```
 
 **Input Field Specification**
 
@@ -81,57 +54,66 @@ props.error is an object with array errors message.
 
 ```javascript
 props.errors['email'] and the output is array
-```
+````
 
 **Forms**
 
 ```javascript
 import React from 'react';
-import {Form} from 'backend-hook'
+import {useForm} from 'backend-hook'
 import gql from 'graphql-tab';
 
 const ADD = gql``;
 const UDATE = gql``;
-function FormChild(props) => {
 
-    const onSubmit = data => {
-        return data;
+function form(props) {
+
+    const {handleInput, onSubmit, setInput, getInput, data: {errors, data}, setValidation} = useForm()
+
+    const send = data => {
+
     }
 
     React.useEffect(()=> {
-        if(props.location.state){
-            props.setInput(props.location.state, ["email"])
-            //For updating purpose alone
-        }
+        setValidation({name: {
+            required: 'required message',
+            email: 'required email'
+        }})
+        props.location.state?setInput(props.location.state, ['rest', 'description']):''
+    }, [])
 
-        props.setValidation({
-            email: {required: 'required message', email: 'Email message'},
-            passwor: {required: 'required message'},
-            confirmPasswor: {password: 'passwordname|password message'}
-        })
-    })
+    return (<React.Fragment>
+        <input type="text" onChange={handleInput} value={getInput('rest')} name="rest" error={errors}>
+        <button onClick={onSubmit(send)}>send</button>
+    </React.Fragment>)
 
-    return (
-        <React.Fragment>
-            <Input type="text" onChange={props.handleInput} errors={props.errors}>
-            <Input type="password" onChange={handleInput} errors={props.errors} name="passwordname">
-            <Input type="password" onChange={handleInput} errors={props.errors} name="confirmPasswor">
-            <Button onClick={onSubmit}>Submit</Button>
-        </React.Fragment>
-    )
 }
+```
 
-function ThatForm ( props ) {
+**Fetch**
 
-    const onSuccess = data =>{
+```javascript
+import React from "react";
+import { useFetch } from "backend-hook";
 
-        //success data
+function fetch(props) {
+  const { runFetch, data } = useFetch({
+    onSuccess: res => {
+      //statement
+    },
+    onError: err => {
+      //statement
     }
+  });
 
-    return (<Form onSuccess={onSuccess} mutation={props.location.state?UPDATE:ADD}>
-                <FormChild></FormChild>
-            </Form>
-            )
+  React.useEffect(() => {
+    runFetch({
+      service: "auth",
+      uri: "/login",
+      data: { name: "israel" },
+      method: "GET"
+    });
+  }, []);
 }
 ```
 
@@ -139,31 +121,22 @@ function ThatForm ( props ) {
 Mutation is for making alteration in database like delete, update, and insert
 
 ```javascript
-import React from 'react'
-import {Mutation} from 'backend-hook'
-import gql from 'graphql-tag';
+import React from "react";
+import { useMutation } from "backend-hook";
+import gql from "graphql-tag";
 
+const INSERT = gql``;
 
-const INSERT = gql``
+function mutation(props) {
+  const { runMutation, data, loading, error } = useMutation({
+    mutation: INSERT,
+    onSuccess: res => {},
+    onError: err => {}
+  });
 
-function MutationChild(props) {
-
-    const onClick = event => {
-        props.runMutation(event)
-    }
-
-    return <button onClick={onClick}><button>
-}
-
-function ViewMutation (props){
-
-    const onSuccessCallback = data =>{
-        //statement
-    }
-    const beforeSendCallback = data => {
-        //statement
-    }
-    return <Mutation onSuccess={onSuccessCallback} beforeSend={beforeSendCallback} mutation={INSERT}></Mutation>
+  React.useEffect(() => {
+    runMutation({ objects: data });
+  });
 }
 ```
 
@@ -171,24 +144,24 @@ function ViewMutation (props){
 
 ```javascript
 import React from 'react'
-import {Query} from 'backend-hook'
+import {useQuery} from 'backend-hook'
 import gql from 'graphql-tag'
 
 cont GET = gql``
 
-function Fetch(props){
+function query(props){
 
-    return (<React.Fragment>
-        {props.data.space && props.data.space.map()}
-    </React.Fragment>)
+   const {runQuery, data} = useQuery ({query: GET, variables: {}, onSuccess: res => {
+
+   }, onError: err => {
+
+   }})
+
+   React.useStat(()=> {
+       runQuery()
+   }, [])
 }
 
-function SpacePage(props){
-
-    return (<Query query={GET} onSuccess={onSuccessCallback} beforeSend={beforeSendCallback} variables={{id: 3}}>
-        <Fetch></Fetch>
-    </Query>)
-}
 ```
 
 **GLOBAL STATE MANAGEMENT**
@@ -201,6 +174,10 @@ function state(props) {
   const { cache, setCache, options, setOptions, resetCache } = React.useContext(
     AppContext
   );
+
+  setCache({ league: "football" });
+
+  setCache({ match: "fulltime" });
 }
 ```
 
@@ -208,5 +185,20 @@ For global app loading
 
 ```javascript
 options.appLoading; //boolean default is false
-setCache({ appLoading: true / false }); //to show or hide loading bar. and this also apply to any form of global state
+setOptions({ appLoading: true / false }); //to show or hide loading bar. and this also apply to any form of global state
+```
+
+For Redirect
+
+```javascript
+
+import React from 'react'
+import {Redirect, ReloadPage} from 'backend-hook'
+
+funtion redirect (props) {
+
+    React.useEffect(()=> {
+        Redirect({to: '/to/page', history: props.history, params: {}})
+    }, [])
+}
 ```

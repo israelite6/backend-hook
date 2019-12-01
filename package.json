@@ -1,6 +1,6 @@
 {
   "name": "backend-hook",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Boilerplate for publishing modern React modules with Rollup",
   "author": "israelite6",
   "license": "MIT",

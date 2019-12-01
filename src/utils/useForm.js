@@ -1,3 +1,5 @@
+import React from "react";
+import { AppContext } from "./../provider/AppProvider";
 import validator from "validator";
 import UpdateObject from "./UpdateObject";
 
@@ -43,11 +45,18 @@ function validation(condition) {
 
   return { validate: validate, errors: errors };
 }
-export function FormHandler(setFormData, formData) {
-  //const { formData, setFormData } = context;
+export function useForm(props) {
+  //const { data, setdata } = context;
+  //const { cache, setCache } = React.useContext(AppContext);
+  const [data, setData] = React.useState({
+    validationData: {},
+    errors: {},
+    data: {}
+  });
+
   const handleInput = event => {
     event.persist();
-    setFormData(r => {
+    setData(r => {
       return {
         ...r,
         validationData: UpdateObject(r.validationData, {
@@ -65,33 +74,73 @@ export function FormHandler(setFormData, formData) {
     });
   };
 
-  const onSubmit = submitCallback => {
+  const onSubmit = submitCallback => () => {
     console.log(submitCallback);
-    setFormData(r => {
+    setData(r => {
       return {
         ...r,
         errors: validation(r.validationData).errors
       };
     });
-    if (Object.keys(formData.errors).length > 0) {
+    if (Object.keys(data.errors).length > 0) {
       return null;
     }
     if (submitCallback) {
-      return submitCallback(formData.data);
+      return submitCallback(data.data);
     } else {
-      return formData.data;
+      return data.data;
     }
   };
   const reset = () => {
-    setFormData({ validationData: {}, errors: {}, data: {} });
+    setData({ validationData: {}, errors: {}, data: {} });
   };
   const setValidation = data => {
-    //setFormData({ validationData: data });
-    setFormData(r => ({
+    //setdata({ validationData: data });
+    setData(r => ({
       ...r,
       validationData: UpdateObject(r.validationData, data)
     }));
   };
 
-  return { handleInput, onSubmit, reset, setValidation };
+  const setInput = (data, fields) => {
+    if (typeof data !== "object" && Array.isArray(data)) {
+      reset();
+    }
+
+    try {
+      if (fields) {
+        fields.map(fm => {
+          handleInput({
+            target: { name: fm, value: data[fm] },
+            persist: function() {}
+          });
+          return fm;
+        });
+      } else {
+        Object.keys(data).map(field => {
+          handleInput({
+            target: { name: field, value: data[field] },
+            persist: function() {}
+          });
+          return field;
+        });
+      }
+    } catch (e) {
+      // reset();
+    }
+  };
+
+  const getInput = field => {
+    return data.data[field] ? data.data[field] : "";
+  };
+
+  return {
+    handleInput,
+    onSubmit,
+    reset,
+    setValidation,
+    data,
+    setInput,
+    getInput
+  };
 }

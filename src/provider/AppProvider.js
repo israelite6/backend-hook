@@ -2,7 +2,6 @@ import React from "react";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import UpdateObject from "./../utils/UpdateObject";
-import Storage from "./../utils/Storage";
 
 export const AppContext = React.createContext({});
 
@@ -44,16 +43,27 @@ export function AppProvider(props) {
   };
 
   const loadCache = () => {
-    if (Storage(props.options.name + "_cache").get()) {
-      setOptions(Storage(props.options.name + "_cache").get());
+    if (localStorage.getItem(props.options.name + "_cache")) {
+      try {
+        setOptions(
+          JSON.parse(localStorage.getItem(props.options.name + "_cache"))
+        );
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
   const resetCache = () => {
     setCacheData(props.defaultData ? props.defaultData : {});
-    Storage(props.options.name + "_cache").set(
-      props.defaultData ? props.defaultData : {}
-    );
+    try {
+      localStorage.setItem(
+        props.options.name + "_cache",
+        JSON.stringify(props.defaultCache ? props.defaultCache : {})
+      );
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   React.useEffect(() => {
