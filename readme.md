@@ -52,9 +52,7 @@ if input name is email to get the error you must get error this way
 
 props.error is an object with array errors message.
 
-```javascript
-props.errors['email'] and the output is array
-````
+
 
 **Forms**
 
@@ -199,6 +197,8 @@ funtion redirect (props) {
 
     React.useEffect(()=> {
         Redirect({to: '/to/page', history: props.history, params: {}})
+        ReloadPage({history: props.history, location: props.location})
     }, [])
 }
 ```
+````

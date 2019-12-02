@@ -10,13 +10,13 @@ export function useQuery(props) {
     When apiCallerCounter  is 2 it means the api fetch cycle have completed
   */
   const [apiCalledCounter, setApiCalledCounter] = React.useState(0);
-
   const { setOptions } = React.useContext(AppContext);
-
-  const [query, { called, loading, data }] = useLazyQuery(props.query, {
+  const [data, setData] = React.useState();
+  const [query, { called, loading }] = useLazyQuery(props.query, {
     variables: props.hasOwnProperty("variables") ? props.variables : {},
 
     onCompleted: data => {
+      setData(data);
       if (props.hasOwnProperty("onSuccess")) {
         props.onSuccess(data);
       }
@@ -38,9 +38,19 @@ export function useQuery(props) {
   }, [loading]);
 
   const runQuery = () => {
-    setApiCalledCounter(1);
+    //if (apiCalledCounter === 0) {
     setOptions({ appLoading: true });
+    setApiCalledCounter(1);
+    query();
+
+    // }
+  };
+
+  const reload = () => {
+    setOptions({ appLoading: true });
+    setApiCalledCounter(1);
     query();
   };
-  return { runQuery, data };
+
+  return { runQuery, data, reload };
 }
