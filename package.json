@@ -1,7 +1,7 @@
 {
   "name": "backend-hook",
-  "version": "1.0.3",
-  "description": "Boilerplate for publishing modern React modules with Rollup",
+  "version": "1.0.4",
+  "description": "Hasura front end hook",
   "author": "israelite6",
   "license": "MIT",
   "repository": "israelite6/backen-hook",
