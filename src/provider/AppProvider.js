@@ -2,6 +2,8 @@ import React from "react";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import UpdateObject from "./../utils/UpdateObject";
+import Toast from "react-toast-notifications";
+const { ToastProvider } = Toast;
 
 export const AppContext = React.createContext({});
 
@@ -80,7 +82,15 @@ export function AppProvider(props) {
           resetCache
         }}
       >
-        {props.children}
+        {typeof document != "undefined" && (
+          <ToastProvider autoDismissTimeout={5000} autoDismiss={true}>
+            {props.children}
+          </ToastProvider>
+        )}
+        {typeof navigator != "undefined" &&
+          navigator.product == "ReactNative" && (
+            <React.Fragment>{props.children}</React.Fragment>
+          )}
       </AppContext.Provider>
     </ApolloProvider>
   );

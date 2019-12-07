@@ -2,6 +2,8 @@
 import React from "react";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { AppContext } from "../provider/AppProvider";
+import Toast from "react-toast-notifications";
+const { useToasts } = Toast;
 
 export function useQuery(props) {
   /* The component refreshes after api called and appLoading is set to false
@@ -12,7 +14,8 @@ export function useQuery(props) {
   const [apiCalledCounter, setApiCalledCounter] = React.useState(0);
   const { setOptions } = React.useContext(AppContext);
   const [data, setData] = React.useState();
-  const [query, { called, loading }] = useLazyQuery(props.query, {
+  const { addToast } = useToasts();
+  const [query, { called, loading, error }] = useLazyQuery(props.query, {
     variables: props.hasOwnProperty("variables") ? props.variables : {},
 
     onCompleted: data => {
@@ -31,6 +34,21 @@ export function useQuery(props) {
   React.useEffect(() => {
     if (!loading) {
       if (apiCalledCounter === 1) {
+        if (error) {
+          addToast(
+            props.responseMessage
+              ? props.responseErrorMessage
+              : "Error! Please try again",
+            { appearance: "error" }
+          );
+          setOptions({
+            responseStatus: "error",
+            responseMessage: props.responseMessage
+              ? props.responseErrorMessage
+              : "Error! Please try again"
+          });
+        }
+
         setOptions({ appLoading: false });
         setApiCalledCounter(2);
       }
@@ -38,17 +56,18 @@ export function useQuery(props) {
   }, [loading]);
 
   const runQuery = () => {
-    //if (apiCalledCounter === 0) {
-    setOptions({ appLoading: true });
-    setApiCalledCounter(1);
-    query();
+    if (apiCalledCounter === 0) {
+      setOptions({ appLoading: true });
+      setApiCalledCounter(1);
 
-    // }
+      query();
+    }
   };
 
   const reload = () => {
     setOptions({ appLoading: true });
     setApiCalledCounter(1);
+
     query();
   };
 

@@ -14,7 +14,7 @@ npm install backend-hook --save
 
 In App.js which is the entrying point for the app
 
-````javascript
+`````javascript
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { AppProvider } from "backend-hook";
@@ -54,9 +54,9 @@ props.error is an object with array errors message.
 
 
 
-**Forms**
+**Form**
 
-```javascript
+````javascript
 import React from 'react';
 import {useForm} from 'backend-hook'
 import gql from 'graphql-tab';
@@ -90,7 +90,7 @@ function form(props) {
 
 **Fetch**
 
-```javascript
+````javascript
 import React from "react";
 import { useFetch } from "backend-hook";
 
@@ -118,7 +118,7 @@ function fetch(props) {
 **Mutation**
 Mutation is for making alteration in database like delete, update, and insert
 
-```javascript
+````javascript
 import React from "react";
 import { useMutation } from "backend-hook";
 import gql from "graphql-tag";
@@ -140,7 +140,7 @@ function mutation(props) {
 
 **Query backend**
 
-```javascript
+````javascript
 import React from 'react'
 import {useQuery} from 'backend-hook'
 import gql from 'graphql-tag'
@@ -164,7 +164,7 @@ function query(props){
 
 **GLOBAL STATE MANAGEMENT**
 
-```javascript
+````javascript
 import React from "react";
 import { AppContext } from "backend-hook";
 
@@ -181,14 +181,14 @@ function state(props) {
 
 For global app loading
 
-```javascript
+````javascript
 options.appLoading; //boolean default is false
 setOptions({ appLoading: true / false }); //to show or hide loading bar. and this also apply to any form of global state
 ```
 
-For Redirect
+**For Redirect**
 
-```javascript
+````javascript
 
 import React from 'react'
 import {Redirect, ReloadPage} from 'backend-hook'
@@ -201,4 +201,17 @@ funtion redirect (props) {
     }, [])
 }
 ```
-````
+**Login**
+
+````javascript
+
+import {useLogin} from 'backend-hook'
+
+function LoginPage() {
+  const {runLogin, updateLogin, isLoggedIn} = useLogin()
+
+  runLogin(res) // to set data for login;
+  updateLogin(res) //update data in case role have changed
+  isLoggedIn() //check if the is logged in.
+}
+`````

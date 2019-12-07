@@ -10,6 +10,7 @@ import useStorage from "./utils/useStorage";
 import { useMutation } from "./utils/useMutation";
 import { useQuery } from "./utils/useQuery";
 import { useLogout } from "./utils/useLogout";
+import { useLogin } from "./utils/useLogin";
 
 export {
   AppContext,
@@ -21,5 +22,6 @@ export {
   useStorage,
   useMutation,
   useQuery,
-  useLogout
+  useLogout,
+  useLogin
 };

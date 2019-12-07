@@ -74,8 +74,10 @@ export function useForm(props) {
     });
   };
 
-  const onSubmit = submitCallback => () => {
-    console.log(submitCallback);
+  const onSubmit = submitCallback => event => {
+    if (event) {
+      event.preventDefault();
+    }
     setData(r => {
       return {
         ...r,
