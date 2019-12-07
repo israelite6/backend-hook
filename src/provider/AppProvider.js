@@ -19,10 +19,9 @@ export function AppProvider(props) {
     uri: props.options.graphqlUrl,
 
     request: operation => {
-      const token = localStorage.getItem(props.options.name + "_token");
       operation.setContext({
         headers: {
-          authorization: token ? `Bearer ${token}` : ""
+          authorization: cache.token ? `Bearer ${cache.token}` : ""
         }
       });
     }
@@ -32,7 +31,11 @@ export function AppProvider(props) {
   const setCache = data => {
     setCacheData(r => {
       const update = UpdateObject(r, data);
-      Storage(props.options.name + "_cache").set(update);
+
+      localStorage.setItem(
+        props.options.name + "_cache",
+        JSON.stringify(update)
+      );
       return update;
     });
   };
@@ -47,12 +50,10 @@ export function AppProvider(props) {
   const loadCache = () => {
     if (localStorage.getItem(props.options.name + "_cache")) {
       try {
-        setOptions(
+        setCache(
           JSON.parse(localStorage.getItem(props.options.name + "_cache"))
         );
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) {}
     }
   };
 
@@ -63,9 +64,7 @@ export function AppProvider(props) {
         props.options.name + "_cache",
         JSON.stringify(props.defaultCache ? props.defaultCache : {})
       );
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   };
 
   React.useEffect(() => {
@@ -84,7 +83,7 @@ export function AppProvider(props) {
       >
         {typeof document != "undefined" && (
           <ToastProvider autoDismissTimeout={5000} autoDismiss={true}>
-            {options.appLoading && <LoadingBar />}
+            <LoadingBar />
 
             {props.children}
           </ToastProvider>

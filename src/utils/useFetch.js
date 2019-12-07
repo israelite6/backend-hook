@@ -5,7 +5,7 @@ import Toast from "react-toast-notifications";
 const { useToasts } = Toast;
 
 export function useFetch(props) {
-  const { setOptions, options } = React.useContext(AppContext);
+  const { setOptions, options, cache } = React.useContext(AppContext);
   const [data, setData] = React.useState();
   const [error, setError] = React.useState();
   const tokenStorage = useStorage("token");
@@ -16,12 +16,11 @@ export function useFetch(props) {
     let urlParam = "";
 
     setOptions({ appLoading: true });
-    const token = tokenStorage.get();
     const fetchData = {
       method: localMethod,
       headers: new Headers({
         "Content-Type": "application/json",
-        authorization: token ? `Bearer ${token}` : ""
+        authorization: cache.token ? `Bearer ${cache.token}` : ""
       })
     };
 
@@ -34,11 +33,6 @@ export function useFetch(props) {
         });
       }
     }
-    console.log(
-      options.services[service] +
-        uri +
-        (localMethod === "GET" ? "?" + urlParam : "")
-    );
 
     fetch(
       options.services[service] +
@@ -48,7 +42,7 @@ export function useFetch(props) {
     )
       .then(res => {
         setOptions({ appLoading: false });
-        console.log(res);
+
         if (res.status === 200) {
           res
             .json()
@@ -150,7 +144,6 @@ export function useFetch(props) {
         }
       })
       .catch(err => {
-        console.log(err);
         setOptions({ appLoading: false });
         addToast(
           props.responseMessage
