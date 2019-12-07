@@ -1,5 +1,5 @@
 import React from "react";
-import { AppContext } from "../provider/AppProvider";
+import { AppContext } from "../provider/AppContext";
 import useStorage from "./useStorage";
 import Toast from "react-toast-notifications";
 const { useToasts } = Toast;

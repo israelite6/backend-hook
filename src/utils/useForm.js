@@ -1,5 +1,5 @@
 import React from "react";
-import { AppContext } from "./../provider/AppProvider";
+import { AppContext } from "./../provider/AppContext";
 import validator from "validator";
 import UpdateObject from "./UpdateObject";
 
@@ -84,7 +84,7 @@ export function useForm(props) {
         errors: validation(r.validationData).errors
       };
     });
-    if (Object.keys(data.errors).length > 0) {
+    if (Object.keys(validation(data.validationData).errors).length > 0) {
       return null;
     }
     if (submitCallback) {

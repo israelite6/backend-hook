@@ -1,6 +1,6 @@
 {
   "name": "backend-hook",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Hasura front end hook",
   "author": "israelite6",
   "license": "MIT",
@@ -60,6 +60,7 @@
     "graphql": "^14.5.8",
     "graphql-tag": "^2.10.1",
     "react-toast-notifications": "^2.4.0",
+    "react-top-loading-bar": "^1.2.0",
     "validator": "^12.0.0"
   }
 }

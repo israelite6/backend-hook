@@ -1,6 +1,6 @@
 import React from "react";
 import { useMutation as UseMutation } from "@apollo/react-hooks";
-import { AppContext } from "./../provider/AppProvider";
+import { AppContext } from "./../provider/AppContext";
 import Toast from "react-toast-notifications";
 const { useToasts } = Toast;
 

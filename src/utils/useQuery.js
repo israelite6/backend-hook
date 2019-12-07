@@ -1,7 +1,7 @@
 /* This compnent handle all query fetch. */
 import React from "react";
 import { useLazyQuery } from "@apollo/react-hooks";
-import { AppContext } from "../provider/AppProvider";
+import { AppContext } from "../provider/AppContext";
 import Toast from "react-toast-notifications";
 const { useToasts } = Toast;
 

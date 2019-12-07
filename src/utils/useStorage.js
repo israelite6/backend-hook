@@ -1,8 +1,9 @@
 import React from "react";
-import { AppContext } from "../provider/AppProvider";
+import { AppContext } from "../provider/AppContext";
 export default function useStorage(key) {
-  const { options } = React.useContext(AppContext);
+  const { options, setCache } = React.useContext(AppContext);
   const set = data => {
+    setCache({ [key]: data });
     if (Array.isArray(data) || typeof data === "object") {
       try {
         data = JSON.stringify(data);

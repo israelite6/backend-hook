@@ -1,11 +1,11 @@
 import React from "react";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
+import { AppContext } from "./AppContext";
 import UpdateObject from "./../utils/UpdateObject";
 import Toast from "react-toast-notifications";
+import LoadingBar from "./../components/LoadingBar";
 const { ToastProvider } = Toast;
-
-export const AppContext = React.createContext({});
 
 export function AppProvider(props) {
   //const cache = new InMemoryCache();
@@ -84,6 +84,8 @@ export function AppProvider(props) {
       >
         {typeof document != "undefined" && (
           <ToastProvider autoDismissTimeout={5000} autoDismiss={true}>
+            {options.appLoading && <LoadingBar />}
+
             {props.children}
           </ToastProvider>
         )}

@@ -1,5 +1,5 @@
 import React from "react";
-import { AppContext } from "../provider/AppProvider";
+import { AppContext } from "../provider/AppContext";
 import { useFetch } from "./useFetch";
 
 export function useLogout(props) {

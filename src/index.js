@@ -2,7 +2,8 @@
  * @class ExampleComponent
  */
 
-import { AppContext, AppProvider } from "./provider/AppProvider";
+import { AppProvider } from "./provider/AppProvider";
+import { AppContext } from "./provider/AppContext";
 import { Redirect, ReloadPage } from "./utils/ReloadPage";
 import { useForm } from "./utils/useForm";
 import { useFetch } from "./utils/useFetch";
