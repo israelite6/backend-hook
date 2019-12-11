@@ -12,6 +12,7 @@ import { useMutation } from "./utils/useMutation";
 import { useQuery } from "./utils/useQuery";
 import { useLogout } from "./utils/useLogout";
 import { useLogin } from "./utils/useLogin";
+import { useUploadMutation } from "./utils/useUploadMutation";
 
 export {
   AppContext,
@@ -24,5 +25,6 @@ export {
   useMutation,
   useQuery,
   useLogout,
-  useLogin
+  useLogin,
+  useUploadMutation
 };

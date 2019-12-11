@@ -5,8 +5,14 @@ export function useLogin() {
   const { setCache, cache } = React.useContext(AppContext);
 
   const runLogin = data => {
+    const user = {
+      user_id: data.id,
+      role: data.role,
+      access: data.access,
+      token: data.token
+    };
     try {
-      setCache(data);
+      setCache(user);
     } catch (err) {}
   };
 

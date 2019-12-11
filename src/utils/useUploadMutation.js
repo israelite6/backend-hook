@@ -1,20 +1,45 @@
 import React from "react";
 import { useMutation as UseMutation } from "@apollo/react-hooks";
 import { AppContext } from "./../provider/AppContext";
+import { createUploadLink } from "apollo-upload-client";
+import { ApolloClient } from "apollo-client";
+import { setContext } from "apollo-link-context";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import CustomFetch from "./CustomFetch";
 import Toast from "react-toast-notifications";
 const { useToasts } = Toast;
 
-export function useMutation(props) {
+export function useUploadMutation(props) {
   /* The component refreshes after api called and appLoading is set to false
     That is why we have apiCallerCounter, So when the component refresh 
     api will not fetch again. 
     When apiCallerCounter  is 2 it means the api fetch cycle have completed
   */
 
-  const { setOptions } = React.useContext(AppContext);
+  const { setOptions, cache, options } = React.useContext(AppContext);
   const [progress, setProgress] = React.useState(0);
   const { addToast } = useToasts();
+
+  const httpLink = createUploadLink({
+    uri: options.graphqlUploadUrl,
+    fetch: typeof window === "undefined" ? global.fetch : CustomFetch
+  });
+
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        authorization: cache.token ? `Bearer ${cache.token}` : ""
+      }
+    };
+  });
+
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache()
+  });
   const [mutate, { loading, error, data }] = UseMutation(props.mutation, {
+    client,
     errorPolicy: "all",
     onCompleted: data => {
       setOptions({ appLoading: false });
