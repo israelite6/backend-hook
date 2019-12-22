@@ -128,7 +128,8 @@ function mutation(props) {
   const { runMutation, data, loading, error } = useMutation({
     mutation: INSERT,
     onSuccess: res => {},
-    onError: err => {}
+    onError: err => {},
+    hideSuccessMessage: boolean
   });
 
   React.useEffect(() => {
@@ -207,10 +208,11 @@ funtion redirect (props) {
 import { useLogin } from "backend-hook";
 
 function LoginPage() {
-  const { runLogin, updateLogin, isLoggedIn } = useLogin();
+  const { runLogin, isLoggedIn, runUpdateLogin } = useLogin();
 
-  runLogin(res); // to set data for login;
-  updateLogin(res); //update data in case role have changed
+  runLogin({ user_id, role, features, token }); // to set data for login;
   isLoggedIn(); //check if the is logged in.
+  showLoginDialog(); //It return true when user have not login  and show dialog box with cache property anonymousDialog
+  runUpdateLogin();
 }
 ```

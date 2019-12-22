@@ -19,10 +19,13 @@ export function useMutation(props) {
     onCompleted: data => {
       setOptions({ appLoading: false });
       setProgress(100);
-      addToast(
-        props.responseMessage ? props.responseSuccessMessage : "Successful!",
-        { appearance: "success" }
-      );
+      if (!props.hideSuccessMessage) {
+        addToast(
+          props.responseMessage ? props.responseSuccessMessage : "Successful!",
+          { appearance: "success" }
+        );
+      }
+
       setOptions({
         responseStatus: "success",
         responseMessage: props.responseMessage
@@ -44,10 +47,12 @@ export function useMutation(props) {
         );
       }
       if (graphQLErrors) {
+        console.log(graphQLErrors);
+
         addToast(
           props.responseMessage
             ? props.responseErrorMessage
-            : "Error! Please try again",
+            : graphQLErrors.map(gm => gm.message).join(" "),
           { appearance: "error" }
         );
       }

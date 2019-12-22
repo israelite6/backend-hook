@@ -34,7 +34,7 @@ export default function LoadingBar() {
   }, [options.appLoading]);
 
   return (
-    <div style={{ position: "absolute", top: 0, left: 0, right: 0 }}>
+    <div style={{ position: "fixed", top: 0, left: 0, right: 0 }}>
       <Loading
         height={3}
         color={options.loadingBarColor ? options.loadingBarColor : "#f11946"}
