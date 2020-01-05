@@ -18,8 +18,7 @@ const UPDATE_LOGIN = gql`
 const RUN_UPDATE_LOGIN = { status: false };
 
 export function useLogin() {
-  const { setCache, cache } = React.useContext(AppContext);
-  const [loginIsUpdated, setLoginIsUpdated] = React.useState(false);
+  const { setCache } = React.useContext(AppContext);
   const localCache = useStorage("cache");
   const { runMutation } = useMutation({
     mutation: UPDATE_LOGIN,
@@ -59,6 +58,16 @@ export function useLogin() {
     }
   };
 
+  const isExist = feature => {
+    if (isLoggedIn()) {
+      if (localCache.get().features.filter(ff => ff === feature).length > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   const showLoginDialog = () => {
     if (!isLoggedIn()) {
       setCache({ anonymousDialog: true });
@@ -77,5 +86,5 @@ export function useLogin() {
     }
   };
 
-  return { runLogin, isLoggedIn, showLoginDialog, runUpdateLogin };
+  return { runLogin, isLoggedIn, showLoginDialog, runUpdateLogin, isExist };
 }

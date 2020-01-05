@@ -2,8 +2,6 @@
 import React from "react";
 import { useLazyQuery } from "@apollo/react-hooks";
 import { AppContext } from "../provider/AppContext";
-import Toast from "react-toast-notifications";
-const { useToasts } = Toast;
 
 export function useQuery(props) {
   /* The component refreshes after api called and appLoading is set to false
@@ -14,17 +12,38 @@ export function useQuery(props) {
   const [apiCalledCounter, setApiCalledCounter] = React.useState(0);
   const { setOptions } = React.useContext(AppContext);
   const [data, setData] = React.useState();
-  const { addToast } = useToasts();
-  const [query, { called, loading, error }] = useLazyQuery(props.query, {
+  const [customLoading, setCustomLoading] = React.useState(false);
+  const [customError, setCustomError] = React.useState(null);
+  const [query, { error }] = useLazyQuery(props.query, {
     variables: props.hasOwnProperty("variables") ? props.variables : {},
 
     onCompleted: data => {
       setData(data);
+      setCustomLoading(false);
       if (props.hasOwnProperty("onSuccess")) {
         props.onSuccess(data);
       }
     },
     onError: err => {
+      setCustomLoading(false);
+      const { graphQLErrors, networkError } = err;
+      let errors = [];
+      if (graphQLErrors) {
+        graphQLErrors.map(error => {
+          if (error.extensions.code === "validation-failed") {
+            errors.push("No permission");
+          }
+          if (error.extensions.code === "custom") {
+            errors.push(error.message);
+          }
+        });
+        setCustomError({ graphql: errors.join("\n") });
+      }
+
+      if (networkError) {
+        setCustomError({ network: "No Network connectivity" });
+      }
+
       if (props.hasOwnProperty("onError")) {
         props.onError(err);
       }
@@ -32,15 +51,10 @@ export function useQuery(props) {
   });
 
   React.useEffect(() => {
-    if (!loading) {
+    if (!customLoading) {
       if (apiCalledCounter === 1) {
+        setApiCalledCounter(2);
         if (error) {
-          addToast(
-            props.responseMessage
-              ? props.responseErrorMessage
-              : "Error! Please try again",
-            { appearance: "error" }
-          );
           setOptions({
             responseStatus: "error",
             responseMessage: props.responseMessage
@@ -50,26 +64,46 @@ export function useQuery(props) {
         }
 
         setOptions({ appLoading: false });
-        setApiCalledCounter(2);
       }
     }
-  }, [loading]);
+  }, [customLoading]);
+
+  /*React.useEffect(() => {
+    console.log(loading + " is loading");
+    if (!loading) {
+      if (apiCalledCounter === 1) {
+        setApiCalledCounter(2);
+        if (error) {
+          setOptions({
+            responseStatus: "error",
+            responseMessage: props.responseMessage
+              ? props.responseErrorMessage
+              : "Error! Please try again"
+          });
+          setApiCalledCounter(3);
+        }
+
+        setOptions({ appLoading: false });
+      }
+    }
+  }, [loading]);*/
 
   const runQuery = () => {
     if (apiCalledCounter === 0) {
       setOptions({ appLoading: true });
       setApiCalledCounter(1);
-
       query();
+      setCustomLoading(true);
     }
   };
 
   const reload = () => {
     setOptions({ appLoading: true });
     setApiCalledCounter(1);
-
+    setCustomLoading(true);
+    setCustomError(null);
     query();
   };
 
-  return { runQuery, data, reload };
+  return { runQuery, data, reload, loading: customLoading, error: customError };
 }

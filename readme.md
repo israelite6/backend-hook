@@ -28,7 +28,15 @@ function App() {
       //payment: "http://localhost:8083",
       auth: "http://localhost:8083"
     },
-    loadingBarColor: "#f11946"
+    loadingBarColor: "#f11946",
+    ErrorBoard: ErrorBoard,
+    Loader: () => (
+      <React.Fragment>
+        <div style={{ textAlign: "center" }}>
+          <img src="/assets/img/loader.svg" width="100" />
+        </div>
+      </React.Fragment>
+    )
   };
   const defaltCache = {};
 
@@ -111,6 +119,40 @@ function fetch(props) {
       method: "GET"
     });
   }, []);
+}
+```
+
+**FetchContainer**
+This component wrappes the component that render fetched Item to display loading, error, and fetchted items
+
+```javascript
+import React from "react";
+import { FetchContainer, useFetch } from "backend-hook";
+
+function fetch(props) {
+  const { runFetch, data, loading, error, reload } = useFetch({
+    onSuccess: res => {
+      //statement
+    },
+    onError: err => {
+      //statement
+    }
+  });
+
+  return (
+    <React.Fragment>
+      <FetchContainer
+        loading={loading}
+        error={error}
+        retry={reload}
+        emptyIcon={/*path to the image */}
+        emptyLabel="empty something"
+        data={data}
+      >
+        {...items}
+      </FetchContainer>
+    </React.Fragment>
+  );
 }
 ```
 
@@ -214,5 +256,22 @@ function LoginPage() {
   isLoggedIn(); //check if the is logged in.
   showLoginDialog(); //It return true when user have not login  and show dialog box with cache property anonymousDialog
   runUpdateLogin();
+}
+```
+
+**Pagination**
+
+```javascript
+import React from "react";
+import { usePagination } from "backend-hook";
+
+function Page(props) {
+  const { runPagination } = usePagination();
+
+  runPagination({
+    total: data.total.aggregate.count,
+    currentPage: page,
+    perPage
+  });
 }
 ```

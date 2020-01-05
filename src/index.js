@@ -13,6 +13,8 @@ import { useQuery } from "./utils/useQuery";
 import { useLogout } from "./utils/useLogout";
 import { useLogin } from "./utils/useLogin";
 import { useUploadMutation } from "./utils/useUploadMutation";
+import FetchContainer from "./components/FetchContainer";
+import { usePagination } from "./utils/usePagination";
 
 export {
   AppContext,
@@ -26,5 +28,7 @@ export {
   useQuery,
   useLogout,
   useLogin,
-  useUploadMutation
+  useUploadMutation,
+  FetchContainer,
+  usePagination
 };

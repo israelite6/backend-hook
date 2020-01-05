@@ -51,7 +51,7 @@ export function AppProvider(props) {
     });
   };
 
-  // this data deals with the app configuration
+  // this data deals with the app configurations
   const setOptions = data => {
     setOptionsData(r => {
       return UpdateObject(r, data);
@@ -94,9 +94,8 @@ export function AppProvider(props) {
       >
         {typeof document != "undefined" && (
           <ToastProvider autoDismissTimeout={5000} autoDismiss={true}>
-            <LoadingBar />
-
             {props.children}
+            <LoadingBar />
           </ToastProvider>
         )}
         {typeof navigator != "undefined" &&

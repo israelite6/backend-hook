@@ -13,11 +13,14 @@ export function useMutation(props) {
 
   const { setOptions } = React.useContext(AppContext);
   const [progress, setProgress] = React.useState(0);
+  const [customLoading, setCustomLoading] = React.useState(false);
+  const [customError, setCustomError] = React.useState(null);
   const { addToast } = useToasts();
-  const [mutate, { loading, error, data }] = UseMutation(props.mutation, {
+  const [mutate, { error, data }] = UseMutation(props.mutation, {
     errorPolicy: "all",
     onCompleted: data => {
       setOptions({ appLoading: false });
+      setCustomLoading(false);
       setProgress(100);
       if (!props.hideSuccessMessage) {
         addToast(
@@ -37,7 +40,25 @@ export function useMutation(props) {
       }
     },
     onError: err => {
+      setCustomLoading(false);
       const { graphQLErrors, networkError } = err;
+      let errors = [];
+      if (graphQLErrors) {
+        graphQLErrors.map(error => {
+          if (error.extensions.code === "validation-failed") {
+            errors.push("No permission");
+          }
+          if (error.extensions.code === "custom") {
+            errors.push(error.message);
+          }
+        });
+        setCustomError({ graphql: errors.join("\n") });
+      }
+
+      if (networkError) {
+        setCustomError({ network: "No Network connectivity" });
+      }
+
       if (networkError) {
         addToast(
           props.responseMessage
@@ -71,7 +92,9 @@ export function useMutation(props) {
     fetchPolicy: "no-cache"
   });
   const runMutation = datas => {
-    setOptions({ appLoading: false });
+    setOptions({ appLoading: true });
+    setCustomError(null);
+    setCustomLoading(true);
     mutate({
       variables: datas,
       context: {
@@ -90,5 +113,11 @@ export function useMutation(props) {
     // setApiCalledCounter(1);
   };
 
-  return { runMutation, data, error, loading, progress };
+  return {
+    runMutation,
+    data,
+    error: customError,
+    loading: customLoading,
+    progress
+  };
 }
