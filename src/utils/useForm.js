@@ -112,18 +112,23 @@ export function useForm(props) {
     try {
       if (fields) {
         fields.map(fm => {
-          handleInput({
-            target: { name: fm, value: data[fm] },
-            persist: function() {}
-          });
+          if (data[fm]) {
+            handleInput({
+              target: { name: fm, value: data[fm] },
+              persist: function() {}
+            });
+          }
           return fm;
         });
       } else {
         Object.keys(data).map(field => {
-          handleInput({
-            target: { name: field, value: data[field] },
-            persist: function() {}
-          });
+          if (data[field]) {
+            handleInput({
+              target: { name: field, value: data[field] },
+              persist: function() {}
+            });
+          }
+
           return field;
         });
       }

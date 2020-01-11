@@ -47,7 +47,7 @@ export function AppProvider(props) {
         props.options.name + "_cache",
         JSON.stringify(update)
       );
-      return update;
+      return Object.assign({}, update);
     });
   };
 
