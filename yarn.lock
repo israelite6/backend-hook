@@ -10591,7 +10591,7 @@ react-transition-group@^4.3.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-"react@link:../../tellit-frontend/node_modules/react":
+"react@link:../pettras/pettras-ionic/node_modules/react":
   version "0.0.0"
   uid ""
 
