@@ -259,6 +259,16 @@ function LoginPage() {
 }
 ```
 
+**Logout**
+
+```javascript
+import { useLogout } from "backend-hook";
+
+function LoginPage() {
+  const { runLogout } = useLogout({ onSuccess: res => {}, onError: err => {} });
+}
+```
+
 **Pagination**
 
 ```javascript

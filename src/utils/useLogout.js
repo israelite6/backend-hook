@@ -23,18 +23,21 @@ export function useLogout(props) {
       }
     },
     onSuccess: res => {
-      Object.keys(localStorage).map(key => {
-        let keys = key.split("_");
-        if (keys[0] === options.name) {
-          localStorage.removeItem(key);
+      if (props) {
+        if (props.onSuccess) {
+          props.onSuccess(res);
         }
-        resetCache();
-        if (props) {
-          if (props.onSuccess) {
-            props.onSuccess(res);
-          }
-        }
-      });
+      }
+      resetCache();
+
+      // Object.keys(localStorage).map(key => {
+      //   let keys = key.split("_");
+      //   if (keys[0] === options.name) {
+      //     localStorage.removeItem(key);
+      //   }
+      //   resetCache();
+
+      // });
     }
   });
 

@@ -16,21 +16,23 @@ import { useUploadMutation } from "./utils/useUploadMutation";
 import FetchContainer from "./components/FetchContainer";
 import { usePagination } from "./utils/usePagination";
 import gql from "graphql-tag";
+import CurrencyFormat from "./utils/CurrencyFormat";
 
 export {
-    AppContext,
-    AppProvider,
-    Redirect,
-    ReloadPage,
-    useForm,
-    useFetch,
-    useStorage,
-    useMutation,
-    useQuery,
-    useLogout,
-    useLogin,
-    useUploadMutation,
-    FetchContainer,
-    usePagination,
-    gql
+  AppContext,
+  AppProvider,
+  Redirect,
+  ReloadPage,
+  useForm,
+  useFetch,
+  useStorage,
+  useMutation,
+  useQuery,
+  useLogout,
+  useLogin,
+  useUploadMutation,
+  FetchContainer,
+  usePagination,
+  gql,
+  CurrencyFormat
 };

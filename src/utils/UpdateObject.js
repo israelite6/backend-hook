@@ -5,15 +5,31 @@ export default function UpdateObject(prevData, newData) {
         prevData[dataMapKey] = newData[dataMapKey];
       } else {
         if (typeof newData[dataMapKey] !== "object") {
-          prevData = { ...prevData, [dataMapKey]: newData[dataMapKey] };
+          if (newData[dataMapKey] === "emptyObject") {
+            prevData = {
+              ...prevData,
+              [dataMapKey]: {}
+            };
+          } else {
+            prevData = {
+              ...prevData,
+              [dataMapKey]: newData[dataMapKey]
+            };
+          }
         } else {
           if (Array.isArray(newData[dataMapKey])) {
             prevData[dataMapKey] = newData[dataMapKey];
           } else {
-            prevData[dataMapKey] = UpdateObject(
-              prevData[dataMapKey],
-              newData[dataMapKey]
-            );
+            console.log(newData[dataMapKey]);
+            if (newData[dataMapKey] === null) {
+              delete prevData[dataMapKey];
+            } else {
+              prevData[dataMapKey] = UpdateObject(
+                prevData[dataMapKey],
+                newData[dataMapKey]
+              );
+            }
+            console.log(prevData[dataMapKey]);
           }
         }
       }
