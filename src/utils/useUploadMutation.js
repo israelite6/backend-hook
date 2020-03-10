@@ -91,7 +91,7 @@ export function useUploadMutation(props) {
     fetchPolicy: "no-cache"
   });
   const runMutation = datas => {
-    setOptions({ appLoading: false });
+    setOptions({ appLoading: true });
     mutate({
       variables: datas,
       context: {
@@ -103,10 +103,13 @@ export function useUploadMutation(props) {
           },
           onAbortPossible: abortHandler => {
             //console.log(abortHandler);
+            //setOptions({ appLoading: false });
           }
         }
       }
-    }).catch(err => {});
+    }).catch(err => {
+      setOptions({ appLoading: false });
+    });
     // setApiCalledCounter(1);
   };
 

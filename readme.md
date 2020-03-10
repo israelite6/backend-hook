@@ -269,6 +269,43 @@ function LoginPage() {
 }
 ```
 
+**Upload**
+
+Upload component
+
+```javascript
+import { Upload } from "backend-hook";
+
+const handleSuccess = res => {};
+const handleProgress = progress => {
+  //progress is int
+};
+const handleChange = file => {
+  //file.target.files[0]
+};
+function UploadPage() {
+  return (
+    <Upload
+      onSuccess={handleSuccess}
+      onProgress={handleProgress}
+      onChange={handleChange}
+      hideProgress={"boolean"}
+      lable={"component or text"}
+      accept={"image/* or others"}
+      progressBarColor="secondary"
+      callbacks={[
+        {
+          mutation: "string",
+          variable: JSON.stringify({
+            upload_id: "id of uploaded will fill automatically"
+          })
+        }
+      ]}
+    />
+  );
+}
+```
+
 **Pagination**
 
 ```javascript

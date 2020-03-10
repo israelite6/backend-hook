@@ -95,7 +95,7 @@ export function AppProvider(props) {
         {typeof document != "undefined" && (
           <ToastProvider autoDismissTimeout={5000} autoDismiss={true}>
             {props.children}
-            <LoadingBar />
+            {options.appLoading && <LoadingBar />}
           </ToastProvider>
         )}
         {typeof navigator != "undefined" &&

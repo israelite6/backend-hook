@@ -1,6 +1,6 @@
 {
   "name": "backend-hook",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Hasura front end hook",
   "author": "israelite6",
   "license": "MIT",
@@ -40,6 +40,7 @@
     "eslint-plugin-react": "^7.10.0",
     "eslint-plugin-standard": "^3.1.0",
     "gh-pages": "^1.2.0",
+    "@material-ui/core": "link:../pettras/pettras-ionic/node_modules/@material-ui/core",
     "react": "link:../pettras/pettras-ionic/node_modules/react",
     "react-scripts": "3.3.0",
     "rollup": "^0.64.1",

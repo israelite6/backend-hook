@@ -19,7 +19,8 @@ const RUN_UPDATE_LOGIN = { status: false };
 
 export function useLogin() {
   const { setCache } = React.useContext(AppContext);
-  const localCache = useStorage("cache");
+  const token = useStorage("token");
+  const features = useStorage("features");
   const { runMutation } = useMutation({
     mutation: UPDATE_LOGIN,
     onSuccess: res => {
@@ -44,12 +45,8 @@ export function useLogin() {
 
   const isLoggedIn = () => {
     try {
-      if (localCache.get().user_id) {
-        if (!localCache.get().ban) {
-          return true;
-        } else {
-          return false;
-        }
+      if (token.get()) {
+        return true;
       } else {
         return false;
       }
@@ -60,7 +57,7 @@ export function useLogin() {
 
   const isExist = feature => {
     if (isLoggedIn()) {
-      if (localCache.get().features.filter(ff => ff === feature).length > 0) {
+      if (features.get().filter(ff => ff === feature).length > 0) {
         return true;
       }
     }

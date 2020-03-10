@@ -1,44 +1,67 @@
 import React from "react";
-import Loading from "react-top-loading-bar";
+import { makeStyles } from "@material-ui/core/styles";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import { AppContext } from "./../provider/AppContext";
-const loadingState = { status: false };
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2)
+    },
+    top: 0,
+    left: 0,
+    right: 0,
+    position: "fixed"
+  }
+}));
 
 export default function LoadingBar() {
-  const [loadingBarProgress, setLoadingBarProgress] = React.useState(0);
   const { options } = React.useContext(AppContext);
-  const [interval, setIntervals] = React.useState(null);
+  const classes = useStyles();
+  const [completed, setCompleted] = React.useState(0);
+  const [buffer, setBuffer] = React.useState(10);
 
-  const add = value => {
-    setLoadingBarProgress(r => r + value);
-  };
-
-  const onLoaderFinished = () => {
-    setLoadingBarProgress(0);
-  };
-
-  const addToLoader = () => {
-    if (loadingBarProgress < 90 && loadingState.status) {
-      add(Math.floor(Math.random() * 11));
-      setTimeout(() => addToLoader(), 1000);
-    }
-  };
+  const progress = React.useRef(() => {});
+  React.useEffect(() => {
+    progress.current = () => {
+      if (completed > 85) {
+        //setCompleted(0);
+        //setBuffer(10);
+      } else {
+        const diff = Math.random() * 10;
+        const diff2 = Math.random() * 10;
+        setCompleted(completed + diff);
+        setBuffer(completed + diff + diff2);
+      }
+    };
+  });
 
   React.useEffect(() => {
-    Object.assign(loadingState, { status: options.appLoading });
-    if (options.appLoading) {
-      addToLoader();
-    } else {
-      clearInterval(interval);
-      onLoaderFinished();
+    if (!options.appLoading) {
+      setCompleted(0);
+      setBuffer(10);
     }
   }, [options.appLoading]);
 
+  React.useEffect(() => {
+    function tick() {
+      progress.current();
+    }
+    const timer = setInterval(tick, 500);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
   return (
-    <div style={{ position: "fixed", top: 0, left: 0, right: 0 }}>
-      <Loading
-        height={3}
-        color={options.loadingBarColor ? options.loadingBarColor : "#f11946"}
-        progress={loadingBarProgress}
+    <div className={classes.root}>
+      <LinearProgress
+        variant="buffer"
+        value={completed}
+        valueBuffer={buffer}
+        color={options.loadingBarColor ? options.loadingBarColor : "secondary"}
       />
     </div>
   );

@@ -20,7 +20,6 @@ export default function UpdateObject(prevData, newData) {
           if (Array.isArray(newData[dataMapKey])) {
             prevData[dataMapKey] = newData[dataMapKey];
           } else {
-            console.log(newData[dataMapKey]);
             if (newData[dataMapKey] === null) {
               delete prevData[dataMapKey];
             } else {
@@ -29,7 +28,6 @@ export default function UpdateObject(prevData, newData) {
                 newData[dataMapKey]
               );
             }
-            console.log(prevData[dataMapKey]);
           }
         }
       }

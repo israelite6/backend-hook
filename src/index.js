@@ -17,6 +17,7 @@ import FetchContainer from "./components/FetchContainer";
 import { usePagination } from "./utils/usePagination";
 import gql from "graphql-tag";
 import CurrencyFormat from "./utils/CurrencyFormat";
+import Upload from "./components/Upload";
 
 export {
   AppContext,
@@ -34,5 +35,6 @@ export {
   FetchContainer,
   usePagination,
   gql,
-  CurrencyFormat
+  CurrencyFormat,
+  Upload
 };
