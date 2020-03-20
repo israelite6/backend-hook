@@ -3,34 +3,33 @@ import { AppContext } from "./../provider/AppContext";
 import UpdateObject from "./UpdateObject";
 
 export default function useStorage(key) {
-	const { options } = React.useContext(AppContext);
+  const { options } = React.useContext(AppContext);
 
-	const set = data => {
-		const newData = UpdateObject(getAll(), { [key]: data });
+  if (!localStorage.getItem(options.name + "_" + "cache")) {
+    localStorage.setItem(options.name + "_" + "cache", JSON.stringify({}));
+  }
 
-		localStorage.setItem(
-			options.name + "_" + "cache",
-			JSON.stringify(newData)
-		);
-	};
+  const set = data => {
+    const newData = UpdateObject(getAll(), { [key]: data });
 
-	const get = () => {
-		const data = getAll();
-		return data[key];
-	};
+    localStorage.setItem(options.name + "_" + "cache", JSON.stringify(newData));
+  };
 
-	const getAll = () => {
-		try {
-			return JSON.parse(
-				localStorage.getItem(options.name + "_" + "cache")
-			);
-		} catch (e) {
-			return {};
-		}
-	};
+  const get = () => {
+    const data = getAll();
+    return data[key];
+  };
 
-	const reset = () => {
-		localStorage.removeItem(options.name + "_" + "cache");
-	};
-	return { set, get, reset, getAll };
+  const getAll = () => {
+    try {
+      return JSON.parse(localStorage.getItem(options.name + "_" + "cache"));
+    } catch (e) {
+      return {};
+    }
+  };
+
+  const reset = () => {
+    localStorage.removeItem(options.name + "_" + "cache");
+  };
+  return { set, get, reset, getAll };
 }
