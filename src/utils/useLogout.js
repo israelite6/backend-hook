@@ -23,12 +23,12 @@ export function useLogout(props) {
       }
     },
     onSuccess: res => {
+      resetCache();
       if (props) {
         if (props.onSuccess) {
           props.onSuccess(res);
         }
       }
-      resetCache();
 
       // Object.keys(localStorage).map(key => {
       //   let keys = key.split("_");
