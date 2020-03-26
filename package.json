@@ -63,7 +63,6 @@
     "graphql-tag": "^2.10.1",
     "react-content-loader": "^4.3.4",
     "react-toast-notifications": "^2.4.0",
-    "react-top-loading-bar": "^1.2.0",
     "validator": "^12.0.0"
   }
 }

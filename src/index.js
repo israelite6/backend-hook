@@ -18,8 +18,6 @@ import { usePagination } from "./utils/usePagination";
 import gql from "graphql-tag";
 import CurrencyFormat from "./utils/CurrencyFormat";
 import Upload from "./components/Upload";
-import useParse from "./utils/useParse";
-import DeletePopover from "./components/DeletePopover";
 
 export {
   AppContext,
@@ -38,7 +36,5 @@ export {
   usePagination,
   gql,
   CurrencyFormat,
-  Upload,
-  useParse,
-  DeletePopover
+  Upload
 };

@@ -1,5 +1,4 @@
 import React from "react";
-import { makeStyles, LinearProgress } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { useUploadMutation } from "./../utils/useUploadMutation";
 import gql from "graphql-tag";
@@ -13,19 +12,6 @@ const UPLOAD_FILE = gql`
     }
   }
 `;
-
-const useStyles = makeStyles(theme => ({
-  button: {
-    marginTop: theme.spacing(1),
-    marginRight: theme.spacing(1)
-  },
-  hideInput: {
-    display: "none"
-  },
-  bar: {
-    width: 50
-  }
-}));
 
 export default function Upload(props) {
   const classes = useStyles();
@@ -71,7 +57,7 @@ export default function Upload(props) {
   return (
     <React.Fragment>
       <input
-        className={classes.hideInput}
+        style={{ display: "none" }}
         accept={props.accept}
         type="file"
         id="file-input"
@@ -80,13 +66,13 @@ export default function Upload(props) {
       <label htmlFor="file-input">
         {props.label && props.label} {props.labelElement && props.labelElement}
       </label>
-      {uploadingState && !props.hideProgress && (
+      {/* {uploadingState && !props.hideProgress && (
         <LinearProgress
           variant="determinate"
           value={progress}
           color={props.progressBarColor}
         />
-      )}
+      )} */}
     </React.Fragment>
   );
 }

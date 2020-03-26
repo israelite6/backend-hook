@@ -8,8 +8,8 @@ import { createUploadLink } from "apollo-upload-client";
 import { AppContext } from "./AppContext";
 import UpdateObject from "./../utils/UpdateObject";
 import Toast from "react-toast-notifications";
-import LoadingBar from "./../components/LoadingBar";
 import CustomFetch from "./../utils/CustomFetch";
+import Reducer from "./../utils/Reducer";
 const { ToastProvider } = Toast;
 
 export function AppProvider(props) {
@@ -17,7 +17,9 @@ export function AppProvider(props) {
   const [options, setOptionsData] = React.useState(
     Object.assign({ appLoading: false, ...props.options })
   );
-  const [cache, setCacheData] = React.useState({});
+
+  const [cache, setCache] = React.useReducer(Reducer, props.options);
+  //const [cache, setCacheData] = React.useState({});
 
   const httpLink = createUploadLink({
     uri: props.options.graphqlUrl,
@@ -39,17 +41,17 @@ export function AppProvider(props) {
   });
 
   //This data will be wipe off on logout
-  const setCache = data => {
-    setCacheData(r => {
-      const update = UpdateObject(r, data);
+  // const setCache = data => {
+  //   setCacheData(r => {
+  //     const update = UpdateObject(r, data);
 
-      localStorage.setItem(
-        props.options.name + "_cache",
-        JSON.stringify(update)
-      );
-      return Object.assign({}, update);
-    });
-  };
+  //     localStorage.setItem(
+  //       props.options.name + "_cache",
+  //       JSON.stringify(update)
+  //     );
+  //     return Object.assign({}, update);
+  //   });
+  // };
 
   // this data deals with the app configurations
   const setOptions = data => {
@@ -78,6 +80,8 @@ export function AppProvider(props) {
     } catch (e) {}
   };
 
+  const LoadingBar = props.options.loadingBar;
+
   React.useEffect(() => {
     loadCache();
   }, []);
@@ -95,7 +99,7 @@ export function AppProvider(props) {
         {typeof document != "undefined" && (
           <ToastProvider autoDismissTimeout={5000} autoDismiss={true}>
             {props.children}
-            {options.appLoading && <LoadingBar />}
+            {options.appLoading && props.options.loadingBar && <LoadingBar />}
           </ToastProvider>
         )}
         {typeof navigator != "undefined" &&

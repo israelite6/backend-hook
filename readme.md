@@ -28,7 +28,7 @@ function App() {
       //payment: "http://localhost:8083",
       auth: "http://localhost:8083"
     },
-    loadingBarColor: "#f11946",
+    LoadingBar: Component,
     ErrorBoard: ErrorBoard,
     Loader: () => (
       <React.Fragment>
@@ -320,99 +320,5 @@ function Page(props) {
     currentPage: page,
     perPage
   });
-}
-```
-
-**Delete Popover**
-
-```html
-<DeletePopover
-  yesLabel="Delete/Element"
-  noLabel="secondary"
-  yesColor="primary"
-  noColor="string"
-  title="are you sure?"
-  onYes="{handleYes}"
-  onNo="{handleNo}"
-  label="string"
-/>
-```
-
-**Parse**
-
-For data insertion
-
-```javascript
-import React from "react";
-import { useParse } from "backend-hook";
-
-export default function parse(props) {
-  const { insert, loading, data, pointer } = useParse({
-    onSuccess: res => {
-      //statement
-    },
-    onError: err => {
-      //statement
-    }
-  });
-
-  const set = data => {
-    insert({ className: "collectionName", data: data });
-  };
-
-  //to reference other table use a pointer
-  const foreignKey = pointer({ className: "collectionName", id: "foreignId" });
-}
-```
-
-Fetch data
-
-```javascript
-import React from "react";
-import { useParse } from "backend-hook";
-
-export default function parse(props) {
-  const { query, find, loading, data } = useParse({
-    onSuccess: res => {
-      //statement
-    },
-    onError: err => {
-      //statement
-    }
-  });
-
-  const withoutFilter = () => {
-    find(query({ className: "collectionName" }));
-  };
-
-  const withFilter = data => {
-    find(
-      query({ className: "collectionName" })
-        .equal("key", "value")
-        .include("anotherTable")
-    );
-  };
-}
-```
-
-Delete data
-
-```javascript
-import React from "react";
-import { useParse } from "backend-hook";
-
-export default function parse(props) {
-  const { destroy, loading, data } = useParse({
-    onSuccess: res => {
-      //statement
-    },
-    onError: err => {
-      //statement
-    }
-  });
-
-  const remove = dataId => {
-    destroy({ className: "collectionName", id: dataId });
-  };
 }
 ```
