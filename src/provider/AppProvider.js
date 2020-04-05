@@ -40,19 +40,6 @@ export function AppProvider(props) {
     cache: new InMemoryCache()
   });
 
-  //This data will be wipe off on logout
-  // const setCache = data => {
-  //   setCacheData(r => {
-  //     const update = UpdateObject(r, data);
-
-  //     localStorage.setItem(
-  //       props.options.name + "_cache",
-  //       JSON.stringify(update)
-  //     );
-  //     return Object.assign({}, update);
-  //   });
-  // };
-
   // this data deals with the app configurations
   const setOptions = data => {
     setOptionsData(r => {
@@ -82,19 +69,27 @@ export function AppProvider(props) {
 
   const LoadingBar = props.options.loadingBar;
 
+  const children = React.Children.map(props.children, child => {
+    return React.cloneElement(child, {
+      cache
+    });
+  });
+
   React.useEffect(() => {
-    loadCache();
+    //loadCache();
   }, []);
   return (
     <ApolloProvider client={client}>
       <AppContext.Provider
-        value={{
-          cache,
-          setCache,
-          options,
-          setOptions,
-          resetCache
-        }}
+        value={
+          {
+            // cache,
+            // setCache,
+            // options,
+            // setOptions,
+            // resetCache
+          }
+        }
       >
         {typeof document != "undefined" && (
           <ToastProvider autoDismissTimeout={5000} autoDismiss={true}>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useMutation as UseMutation } from "@apollo/react-hooks";
+import useStore from "./useStore";
 import { AppContext } from "./../provider/AppContext";
 import Toast from "react-toast-notifications";
 const { useToasts } = Toast;
@@ -10,7 +11,7 @@ export function useMutation(props) {
     api will not fetch again. 
     When apiCallerCounter  is 2 it means the api fetch cycle have completed
   */
-
+  const { setCache, cache } = useStore();
   const { setOptions } = React.useContext(AppContext);
   const [progress, setProgress] = React.useState(0);
   const [customLoading, setCustomLoading] = React.useState(false);
@@ -59,24 +60,24 @@ export function useMutation(props) {
         setCustomError({ network: "No Network connectivity" });
       }
 
-      if (networkError) {
-        addToast(
-          props.responseMessage
-            ? props.responseErrorMessage
-            : "Error! Check your internet connectivity",
-          { appearance: "error" }
-        );
-      }
-      if (graphQLErrors) {
-        console.log(graphQLErrors);
+      // if (networkError) {
+      //   addToast(
+      //     props.responseMessage
+      //       ? props.responseErrorMessage
+      //       : "Error! Check your internet connectivity",
+      //     { appearance: "error" }
+      //   );
+      // }
+      // if (graphQLErrors) {
+      //   console.log(graphQLErrors);
 
-        addToast(
-          props.responseMessage
-            ? props.responseErrorMessage
-            : graphQLErrors.map(gm => gm.message).join(" "),
-          { appearance: "error" }
-        );
-      }
+      //   addToast(
+      //     props.responseMessage
+      //       ? props.responseErrorMessage
+      //       : graphQLErrors.map(gm => gm.message).join(" "),
+      //     { appearance: "error" }
+      //   );
+      // }
       setOptions({ appLoading: false });
 
       setOptions({
