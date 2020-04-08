@@ -1,17 +1,16 @@
 import React from "react";
-import { AppContext } from "./../provider/AppContext";
+import useStore from "./useStore";
 import UpdateObject from "./UpdateObject";
 
 export default function useStorage(key) {
-  const { options } = React.useContext(AppContext);
+  const { options } = useStore();
 
   if (!localStorage.getItem(options.name + "_" + "cache")) {
     localStorage.setItem(options.name + "_" + "cache", JSON.stringify({}));
   }
 
-  const set = data => {
+  const set = (data) => {
     const newData = UpdateObject(getAll(), { [key]: data });
-
     localStorage.setItem(options.name + "_" + "cache", JSON.stringify(newData));
   };
 

@@ -1,7 +1,8 @@
 import React from "react";
-import Reducer from "./Reducer";
+import { OptionReducer, Reducer } from "./Reducer";
 
 export default function useStore() {
   const [cache, setCache] = React.useReducer(Reducer, {});
-  return { cache, setCache };
+  const [options, setOptions] = React.useReducer(OptionReducer, {});
+  return { cache, setCache, options, setOptions };
 }

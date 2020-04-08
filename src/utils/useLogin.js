@@ -1,8 +1,7 @@
-import React from "react";
-import { AppContext } from "./../provider/AppContext";
 import { useMutation } from "./useMutation";
 import useStorage from "./useStorage";
 import gql from "graphql-tag";
+import useStore from "./useStore";
 
 const UPDATE_LOGIN = gql`
   mutation loginUpdate {
@@ -18,16 +17,16 @@ const UPDATE_LOGIN = gql`
 const RUN_UPDATE_LOGIN = { status: false };
 
 export function useLogin() {
-  const { setCache } = React.useContext(AppContext);
+  const { setCache } = useStore();
   const token = useStorage("token");
   const features = useStorage("features");
   const { runMutation } = useMutation({
     mutation: UPDATE_LOGIN,
-    onSuccess: res => {
+    onSuccess: (res) => {
       runLogin(res.loginUpdate);
     },
-    onError: err => {},
-    hideSuccessMessage: true
+    onError: (err) => {},
+    hideSuccessMessage: true,
   });
 
   const runLogin = ({ user_id, features, role, token, ban }) => {
@@ -36,7 +35,7 @@ export function useLogin() {
       features,
       role,
       token,
-      ban
+      ban,
     };
     try {
       setCache(user);
@@ -55,9 +54,9 @@ export function useLogin() {
     }
   };
 
-  const isExist = feature => {
+  const isExist = (feature) => {
     if (isLoggedIn()) {
-      if (features.get().filter(ff => ff === feature).length > 0) {
+      if (features.get().filter((ff) => ff === feature).length > 0) {
         return true;
       }
     }

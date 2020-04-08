@@ -1,7 +1,5 @@
-import React from "react";
-import { AppContext } from "../provider/AppContext";
-import { useFetch } from "./useFetch";
 import { useMutation } from "./useMutation";
+import useStore from "./useStore";
 import gql from "graphql-tag";
 
 const LOGOUT_MUTATION = gql`
@@ -12,18 +10,20 @@ const LOGOUT_MUTATION = gql`
   }
 `;
 export function useLogout(props) {
-  const { options, resetCache } = React.useContext(AppContext);
+  const { options, setCache } = useStore();
   const { runMutation } = useMutation({
     mutation: LOGOUT_MUTATION,
-    onError: err => {
+    onError: (err) => {
       if (props) {
         if (props.onError) {
           props.onError(err);
         }
       }
     },
-    onSuccess: res => {
-      resetCache();
+    onSuccess: (res) => {
+      setCache({ resetCache: true });
+      setCache(options);
+      //resetCache();
       if (props) {
         if (props.onSuccess) {
           props.onSuccess(res);
@@ -38,7 +38,7 @@ export function useLogout(props) {
       //   resetCache();
 
       // });
-    }
+    },
   });
 
   const runLogout = () => {

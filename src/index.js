@@ -2,8 +2,8 @@
  * @class ExampleComponent
  */
 
-// import { AppProvider } from "./provider/AppProvider";
-// import { AppContext } from "./provider/AppContext";
+import { AppProvider } from "./provider/AppProvider";
+import { AppContext } from "./provider/AppContext";
 import { Redirect, ReloadPage } from "./utils/ReloadPage";
 import { useForm } from "./utils/useForm";
 import { useFetch } from "./utils/useFetch";
@@ -21,8 +21,8 @@ import Upload from "./components/Upload";
 import useStore from "./utils/useStore";
 
 export {
-  // AppContext,
-  // AppProvider,
+  AppContext,
+  AppProvider,
   Redirect,
   ReloadPage,
   useForm,

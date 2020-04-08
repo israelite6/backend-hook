@@ -1,11 +1,15 @@
 import UpdateObject from "./UpdateObject";
 
-export default function Reducer(state, newState) {
+export function Reducer(state, newState) {
+  if (newState.resetCache) {
+    localStorage.setItem(state.name + "_cache", JSON.stringify({}));
+    return d;
+  }
   let d = Object.assign({}, UpdateObject(state, newState));
   localStorage.setItem(state.name + "_cache", JSON.stringify(d));
   return d;
 }
 
-export function MiniReducer(state, newState) {
-  return state;
+export function OptionReducer(state, newState) {
+  return Object.assign({}, UpdateObject(state, newState));
 }

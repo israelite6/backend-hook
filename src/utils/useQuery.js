@@ -1,7 +1,7 @@
 /* This compnent handle all query fetch. */
 import React from "react";
 import { useLazyQuery } from "@apollo/react-hooks";
-import { AppContext } from "../provider/AppContext";
+import useStore from "./useStore";
 
 export function useQuery(props) {
   /* The component refreshes after api called and appLoading is set to false
@@ -9,15 +9,15 @@ export function useQuery(props) {
     api will not fetch again. 
     When apiCallerCounter  is 2 it means the api fetch cycle have completed
   */
+  const { setCache, cache, setOptions } = useStore();
   const [apiCalledCounter, setApiCalledCounter] = React.useState(0);
-  const { setOptions, setCache, cache } = React.useContext(AppContext);
   const [data, setData] = React.useState();
   const [customLoading, setCustomLoading] = React.useState(false);
   const [customError, setCustomError] = React.useState(null);
   const [query, { error }] = useLazyQuery(props.query, {
     variables: props.hasOwnProperty("variables") ? props.variables : {},
 
-    onCompleted: data => {
+    onCompleted: (data) => {
       try {
         if (props.hasOwnProperty("onSuccess")) {
           props.onSuccess(data);
@@ -33,12 +33,12 @@ export function useQuery(props) {
         }
       }
     },
-    onError: err => {
+    onError: (err) => {
       setCustomLoading(false);
       const { graphQLErrors, networkError } = err;
       let errors = [];
       if (graphQLErrors) {
-        graphQLErrors.map(error => {
+        graphQLErrors.map((error) => {
           if (error.extensions.code === "validation-failed") {
             errors.push("No permission");
           }
@@ -56,56 +56,33 @@ export function useQuery(props) {
       if (props.hasOwnProperty("onError")) {
         props.onError(err);
       }
-    }
+    },
   });
-
-  React.useEffect(() => {
-    if (props.cache) {
-      setData(cache[props.cache]);
-    }
-  }, []);
 
   React.useEffect(() => {
     if (!customLoading) {
       if (apiCalledCounter === 1) {
         setApiCalledCounter(2);
-        if (error) {
-          setOptions({
-            responseStatus: "error",
-            responseMessage: props.responseMessage
-              ? props.responseErrorMessage
-              : "Error! Please try again"
-          });
-        }
+        // if (error) {
+        //   setOptions({
+        //     responseStatus: "error",
+        //     responseMessage: props.responseMessage
+        //       ? props.responseErrorMessage
+        //       : "Error! Please try again",
+        //   });
+        // }
 
-        setOptions({ appLoading: false });
+        // setOptions({ appLoading: false });
       }
     }
   }, [customLoading]);
 
-  /*React.useEffect(() => {
-    console.log(loading + " is loading");
-    if (!loading) {
-      if (apiCalledCounter === 1) {
-        setApiCalledCounter(2);
-        if (error) {
-          setOptions({
-            responseStatus: "error",
-            responseMessage: props.responseMessage
-              ? props.responseErrorMessage
-              : "Error! Please try again"
-          });
-          setApiCalledCounter(3);
-        }
-
-        setOptions({ appLoading: false });
-      }
-    }
-  }, [loading]);*/
-
   const runQuery = () => {
     if (apiCalledCounter === 0) {
-      setOptions({ appLoading: true });
+      if (props.cache) {
+        setData(cache[props.cache]);
+      }
+      // setOptions({ appLoading: true });
       setApiCalledCounter(1);
       query();
       setCustomLoading(true);
@@ -113,7 +90,7 @@ export function useQuery(props) {
   };
 
   const reload = () => {
-    setOptions({ appLoading: true });
+    // setOptions({ appLoading: true });
     setApiCalledCounter(1);
     setCustomLoading(true);
     setCustomError(null);
@@ -126,6 +103,6 @@ export function useQuery(props) {
     reload,
     loading: customLoading,
     error: customError,
-    cache: props.cache ? true : false
+    cache: props.cache ? true : false,
   };
 }

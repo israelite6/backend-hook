@@ -1,34 +1,34 @@
 import React from "react";
-import { AppContext } from "../provider/AppContext";
-import useStorage from "./useStorage";
-import Toast from "react-toast-notifications";
-const { useToasts } = Toast;
+import useStore from "./useStore";
 
 export function useFetch(props) {
-  const { setOptions, options, cache } = React.useContext(AppContext);
+  const { cache, options, setCache } = useStore();
   const [data, setData] = React.useState();
   const [error, setError] = React.useState();
-  const tokenStorage = useStorage("token");
-  const { addToast } = useToasts();
+  const [loading, setLoading] = React.useState(false);
 
   const runFetch = ({ service, uri, data, method }) => {
+    if (props.cache) {
+      setData(cache[props.cache]);
+    }
+
     const localMethod = method ? method : "GET";
     let urlParam = "";
 
-    setOptions({ appLoading: true });
+    setLoading(true);
     const fetchData = {
       method: localMethod,
       headers: new Headers({
         "Content-Type": "application/json",
-        authorization: cache.token ? `Bearer ${cache.token}` : ""
-      })
+        authorization: cache.token ? `Bearer ${cache.token}` : "",
+      }),
     };
 
     if (localMethod !== "GET") {
       Object.assign(fetchData, { body: JSON.stringify(data ? data : {}) });
     } else {
       if (data) {
-        Object.keys(data).map(key => {
+        Object.keys(data).map((key) => {
           urlParam += key + "=" + encodeURIComponent(data[key]) + "&";
         });
       }
@@ -40,28 +40,17 @@ export function useFetch(props) {
         (localMethod === "GET" ? "?" + urlParam : ""),
       fetchData
     )
-      .then(res => {
-        setOptions({ appLoading: false });
+      .then((res) => {
+        setLoading(false);
 
         if (res.status === 200) {
           res
             .json()
-            .then(res => {
+            .then((res) => {
               setData(res);
 
-              if (localMethod !== "GET") {
-                setOptions({
-                  responseStatus: "success",
-                  responseMessage: props.responseMessage
-                    ? props.responseSuccessMessage
-                    : "Successful!"
-                });
-                addToast(
-                  props.responseMessage
-                    ? props.responseSuccessMessage
-                    : "Successful!",
-                  { appearance: "success" }
-                );
+              if (props.cache) {
+                setCache({ [props.cache]: res });
               }
 
               if (props) {
@@ -70,22 +59,8 @@ export function useFetch(props) {
                 }
               }
             })
-            .catch(err => {
+            .catch((err) => {
               setError(err);
-
-              addToast(
-                props.responseMessage
-                  ? props.responseErrorMessage
-                  : "Error! Please try again",
-                { appearance: "error" }
-              );
-
-              setOptions({
-                responseStatus: "error",
-                responseMessage: props.responseMessage
-                  ? props.responseErrorMessage
-                  : "Error! Please try again"
-              });
 
               if (props) {
                 if (props.onError) {
@@ -96,44 +71,15 @@ export function useFetch(props) {
         } else {
           res
             .json()
-            .then(err => {
-              setError(err);
-
-              setOptions({
-                responseStatus: "error",
-                responseMessage: props.responseMessage
-                  ? props.responseErrorMessage
-                  : "Error! Please try again"
-              });
-
-              addToast(
-                props.responseMessage
-                  ? props.responseErrorMessage
-                  : "Error! Please try again",
-                { appearance: "error" }
-              );
+            .then((err) => {
               if (props) {
                 if (props.onError) {
                   props.onError(err);
                 }
               }
             })
-            .catch(err => {
+            .catch((err) => {
               setError(err);
-
-              setOptions({
-                responseStatus: "error",
-                responseMessage: props.responseMessage
-                  ? props.responseErrorMessage
-                  : "Error! Please try again"
-              });
-
-              addToast(
-                props.responseMessage
-                  ? props.responseErrorMessage
-                  : "Error! Please try again",
-                { appearance: "error" }
-              );
 
               if (props) {
                 if (props.onError) {
@@ -143,23 +89,15 @@ export function useFetch(props) {
             });
         }
       })
-      .catch(err => {
-        setOptions({ appLoading: false });
-        addToast(
-          props.responseMessage
-            ? props.responseErrorMessage
-            : "Error! Check your internet conectivity",
-          { appearance: "error" }
-        );
-
-        setOptions({
-          responseStatus: "error",
-          responseMessage: props.responseMessage
-            ? props.responseErrorMessage
-            : "Error! Check your internet conectivity"
-        });
+      .catch((err) => {
+        if (props) {
+          if (props.onError) {
+            props.onError(err);
+          }
+        }
+        setLoading(false);
       });
   };
 
-  return { runFetch, error, data };
+  return { runFetch, error, data, loading };
 }
