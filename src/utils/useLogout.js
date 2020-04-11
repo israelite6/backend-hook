@@ -1,6 +1,6 @@
 import { useMutation } from "./useMutation";
-import useStore from "./useStore";
 import gql from "graphql-tag";
+import { getResetCachefn } from "./Cache";
 
 const LOGOUT_MUTATION = gql`
   mutation logout {
@@ -10,7 +10,8 @@ const LOGOUT_MUTATION = gql`
   }
 `;
 export function useLogout(props) {
-  const { options, setCache } = useStore();
+  const resetCache = getResetCachefn;
+
   const { runMutation } = useMutation({
     mutation: LOGOUT_MUTATION,
     onError: (err) => {
@@ -21,8 +22,7 @@ export function useLogout(props) {
       }
     },
     onSuccess: (res) => {
-      setCache({ resetCache: true });
-      setCache(options);
+      resetCache();
       //resetCache();
       if (props) {
         if (props.onSuccess) {

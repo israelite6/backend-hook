@@ -6,7 +6,7 @@ import { ApolloClient } from "apollo-client";
 import { setContext } from "apollo-link-context";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import CustomFetch from "./CustomFetch";
-import useStore from "./useStore";
+import { getCache } from "./Cache";
 //import Toast from "react-toast-notifications";
 //const { useToasts } = Toast;
 
@@ -17,12 +17,13 @@ export function useUploadMutation(props) {
     When apiCallerCounter  is 2 it means the api fetch cycle have completed
   */
   const [loading, setLoading] = React.useState(false);
-  const { cache, options } = useStore();
+  //const { cache, options } = useStore();
+  const cache = getCache();
   const [progress, setProgress] = React.useState(0);
   // const { addToast } = useToasts();
 
   const httpLink = createUploadLink({
-    uri: options.graphqlUploadUrl,
+    uri: cache.graphqlUploadUrl,
     fetch: typeof window === "undefined" ? global.fetch : CustomFetch,
   });
 

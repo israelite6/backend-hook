@@ -1,7 +1,7 @@
 import { useMutation } from "./useMutation";
 import useStorage from "./useStorage";
 import gql from "graphql-tag";
-import useStore from "./useStore";
+import { getSetCache } from "./Cache";
 
 const UPDATE_LOGIN = gql`
   mutation loginUpdate {
@@ -17,9 +17,9 @@ const UPDATE_LOGIN = gql`
 const RUN_UPDATE_LOGIN = { status: false };
 
 export function useLogin() {
-  const { setCache } = useStore();
   const token = useStorage("token");
   const features = useStorage("features");
+  const setCache = getSetCache();
   const { runMutation } = useMutation({
     mutation: UPDATE_LOGIN,
     onSuccess: (res) => {

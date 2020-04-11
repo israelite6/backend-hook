@@ -1,17 +1,16 @@
-import React from "react";
-import useStore from "./useStore";
+import { getCache } from "./Cache";
 import UpdateObject from "./UpdateObject";
 
 export default function useStorage(key) {
-  const { options } = useStore();
+  const cache = getCache();
 
-  if (!localStorage.getItem(options.name + "_" + "cache")) {
-    localStorage.setItem(options.name + "_" + "cache", JSON.stringify({}));
+  if (!localStorage.getItem(cache.name + "_" + "cache")) {
+    localStorage.setItem(cache.name + "_" + "cache", JSON.stringify({}));
   }
 
   const set = (data) => {
     const newData = UpdateObject(getAll(), { [key]: data });
-    localStorage.setItem(options.name + "_" + "cache", JSON.stringify(newData));
+    localStorage.setItem(cache.name + "_" + "cache", JSON.stringify(newData));
   };
 
   const get = () => {
@@ -21,14 +20,14 @@ export default function useStorage(key) {
 
   const getAll = () => {
     try {
-      return JSON.parse(localStorage.getItem(options.name + "_" + "cache"));
+      return JSON.parse(localStorage.getItem(cache.name + "_" + "cache"));
     } catch (e) {
       return {};
     }
   };
 
   const reset = () => {
-    localStorage.removeItem(options.name + "_" + "cache");
+    localStorage.removeItem(cache.name + "_" + "cache");
   };
   return { set, get, reset, getAll };
 }

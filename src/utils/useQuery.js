@@ -1,7 +1,7 @@
 /* This compnent handle all query fetch. */
 import React from "react";
 import { useLazyQuery } from "@apollo/react-hooks";
-import useStore from "./useStore";
+import { getSetCache, getCache } from "./Cache";
 
 export function useQuery(props) {
   /* The component refreshes after api called and appLoading is set to false
@@ -9,24 +9,23 @@ export function useQuery(props) {
     api will not fetch again. 
     When apiCallerCounter  is 2 it means the api fetch cycle have completed
   */
-  const { setCache, cache, setOptions } = useStore();
   const [apiCalledCounter, setApiCalledCounter] = React.useState(0);
   const [data, setData] = React.useState();
   const [customLoading, setCustomLoading] = React.useState(false);
   const [customError, setCustomError] = React.useState(null);
+  const setCache = getSetCache();
+  const cache = getCache();
   const [query, { error }] = useLazyQuery(props.query, {
+    fetchPolicy: "network-only",
     variables: props.hasOwnProperty("variables") ? props.variables : {},
 
     onCompleted: (data) => {
+      setData(data);
+      setCustomLoading(false);
       try {
         if (props.hasOwnProperty("onSuccess")) {
           props.onSuccess(data);
         }
-        if (props.cache) {
-          setCache({ [props.cache]: data });
-        }
-        setData(data);
-        setCustomLoading(false);
       } catch (err) {
         if (props.onError) {
           props.onError(err);
@@ -63,6 +62,10 @@ export function useQuery(props) {
     if (!customLoading) {
       if (apiCalledCounter === 1) {
         setApiCalledCounter(2);
+        if (props.cache) {
+          setCache({ [props.cache]: data });
+        }
+
         // if (error) {
         //   setOptions({
         //     responseStatus: "error",
@@ -83,6 +86,7 @@ export function useQuery(props) {
         setData(cache[props.cache]);
       }
       // setOptions({ appLoading: true });
+
       setApiCalledCounter(1);
       query();
       setCustomLoading(true);

@@ -5,15 +5,21 @@ import { setContext } from "apollo-link-context";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { createUploadLink } from "apollo-upload-client";
+import useStorage from "./../utils/useStorage";
 //import { AppContext } from "./AppContext";
 //import UpdateObject from "./../utils/UpdateObject";
 //import Toast from "react-toast-notifications";
 import CustomFetch from "./../utils/CustomFetch";
 //const { ToastProvider } = Toast;
 import useStore from "./../utils/useStore";
+import { setCacheFn, setCacheData, setResetCachefn } from "./../utils/Cache";
 
 export function AppProvider(props) {
-  const { cache, setCache, setOptions } = useStore();
+  console.log(props.options);
+  const { cache, setCache } = useStore(props.options);
+  const token = useStorage("token");
+  setCacheFn(setCache);
+  setCacheData(cache);
 
   const httpLink = createUploadLink({
     uri: props.options.graphqlUrl,
@@ -21,13 +27,22 @@ export function AppProvider(props) {
   });
 
   const authLink = setContext((_, { headers }) => {
+    console.log(token.get() ? `Bearer ${token.get()}` : "");
+
     return {
       headers: {
         ...headers,
-        authorization: cache.token ? `Bearer ${cache.token}` : "",
+        authorization: token.get() ? `Bearer ${token.get()}` : "",
       },
     };
   });
+
+  const resetCache = () => {
+    console.log("reseting");
+    setCache({ resetCache: true, options: props.options });
+  };
+
+  setResetCachefn(resetCache);
 
   const client = new ApolloClient({
     link: authLink.concat(httpLink),
@@ -42,7 +57,9 @@ export function AppProvider(props) {
         setCache(
           JSON.parse(localStorage.getItem(props.options.name + "_cache"))
         );
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
     }
   };
 
@@ -67,27 +84,9 @@ export function AppProvider(props) {
 
   React.useEffect(() => {
     loadCache();
-    setCache({ ...props.options });
-    setOptions({ ...props.options });
   }, []);
   return (
     <ApolloProvider client={client}>
-      {/* <AppContext.Provider
-        value={
-          {
-            // cache,
-            // setCache,
-            // options,
-            // setOptions,
-            // resetCache
-          }
-        }
-      > */}
-      {/* {typeof document != "undefined" && (
-          <ToastProvider autoDismissTimeout={5000} autoDismiss={true}>
-            
-          </ToastProvider>
-        )} */}
       {children}
       {typeof navigator != "undefined" &&
         navigator.product == "ReactNative" && (
