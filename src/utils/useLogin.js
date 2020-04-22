@@ -1,9 +1,8 @@
-import { useMutation } from "./useMutation";
+import useGrpahql from "./useGraphql";
 import useStorage from "./useStorage";
-import gql from "graphql-tag";
 import { getSetCache } from "./Cache";
 
-const UPDATE_LOGIN = gql`
+const UPDATE_LOGIN = `
   mutation loginUpdate {
     loginUpdate {
       user_id
@@ -20,8 +19,8 @@ export function useLogin() {
   const token = useStorage("token");
   const features = useStorage("features");
   const setCache = getSetCache();
-  const { runMutation } = useMutation({
-    mutation: UPDATE_LOGIN,
+  const { runGraphql } = useGrpahql({
+    query: UPDATE_LOGIN,
     onSuccess: (res) => {
       runLogin(res.loginUpdate);
     },
@@ -77,7 +76,7 @@ export function useLogin() {
     if (!RUN_UPDATE_LOGIN.status) {
       if (isLoggedIn()) {
         Object.assign(RUN_UPDATE_LOGIN, { status: true });
-        runMutation({});
+        runGraphql({});
       }
     }
   };

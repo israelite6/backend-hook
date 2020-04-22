@@ -4,7 +4,7 @@ import UpdateObject from "./UpdateObject";
 export default function useStorage(key) {
   const cache = getCache();
 
-  if (!localStorage.getItem(cache.name + "_" + "cache")) {
+  if (!localStorage.getItem(cache.name + "_" + "cache") && cache.name) {
     localStorage.setItem(cache.name + "_" + "cache", JSON.stringify({}));
   }
 

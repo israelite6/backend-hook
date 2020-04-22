@@ -1,57 +1,60 @@
 import React from "react";
-import ContentLoader from "react-content-loader";
+//import ContentLoader from "react-content-loader";
 import { getCache } from "./../utils/Cache";
 
-export default function FetchContainer(props) {
+export default function FetchContainer({
+  loading,
+  data,
+  error,
+  refetch,
+  empty: propsEmpty,
+  emptyIcon,
+  emptyLabel,
+  ...props
+}) {
   const cache = getCache();
 
   const { ErrorBoard, Loader, EmptyBoard } = cache;
 
-  const loader = props.shapes ? (
-    <ContentLoader>{props.shapes}</ContentLoader>
-  ) : (
-    <Loader></Loader>
-  );
+  const loader = <Loader></Loader>;
 
-  if (props.loading) {
+  if (loading && !data) {
     return loader;
   }
 
-  if (props.error) {
+  if (error) {
     return (
       <React.Fragment>
-        <ErrorBoard reload={props.reload} error={props.error}></ErrorBoard>
+        <ErrorBoard reload={refetch} error={error}></ErrorBoard>
       </React.Fragment>
     );
   }
-
-  if (props.data) {
-    let empty = false;
-    Object.keys(props.data).map((key, index) => {
-      if (index === 0) {
-        if (props.data[key].length === 0) {
-          empty = true;
+  try {
+    if (data.data) {
+      let empty = false;
+      Object.keys(data.data).map((key, index) => {
+        if (index === 0) {
+          if (data[key].length === 0) {
+            empty = true;
+          }
         }
+      });
+
+      if (empty) {
+        return (
+          <React.Fragment>
+            {propsEmpty ? (
+              <React.Fragment>{propsEmpty}</React.Fragment>
+            ) : (
+              <EmptyBoard icon={emptyIcon} label={emptyLabel}></EmptyBoard>
+            )}
+          </React.Fragment>
+        );
       }
-    });
-
-    if (empty) {
-      return (
-        <React.Fragment>
-          {props.empty ? (
-            <React.Fragment>{props.empty}</React.Fragment>
-          ) : (
-            <EmptyBoard
-              icon={props.emptyIcon}
-              label={props.emptyLabel}
-            ></EmptyBoard>
-          )}
-        </React.Fragment>
-      );
     }
-  }
+  } catch (e) {}
 
-  if (props.cache && props.data && props.loading) {
+  if (data && loading) {
     return (
       <React.Fragment>
         <Loader />

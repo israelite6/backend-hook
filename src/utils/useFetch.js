@@ -1,26 +1,39 @@
 import React from "react";
-import useStore from "./useStore";
+import { getSetCache, getCache } from "./Cache";
+import useStorage from "./useStorage";
 
-export function useFetch(props) {
-  const { cache, options, setCache } = useStore();
+export default function useFetch({
+  service,
+  uri,
+  method,
+  cache: propsCache,
+  onError,
+  onSuccess,
+}) {
   const [data, setData] = React.useState();
   const [error, setError] = React.useState();
   const [loading, setLoading] = React.useState(false);
+  const setCache = getSetCache();
+  const cache = getCache();
+  const token = useStorage("token");
+  const state = { active: true };
 
-  const runFetch = ({ service, uri, data, method }) => {
-    if (props.cache) {
-      setData(cache[props.cache]);
+  const runFetch = (data) => {
+    if (propsCache) {
+      setData(cache[propsCache]);
     }
 
     const localMethod = method ? method : "GET";
     let urlParam = "";
 
     setLoading(true);
+
     const fetchData = {
       method: localMethod,
       headers: new Headers({
         "Content-Type": "application/json",
-        authorization: cache.token ? `Bearer ${cache.token}` : "",
+        Accept: "application/json",
+        authorization: token.get() ? `Bearer ${token.get()}` : "",
       }),
     };
 
@@ -30,74 +43,94 @@ export function useFetch(props) {
       if (data) {
         Object.keys(data).map((key) => {
           urlParam += key + "=" + encodeURIComponent(data[key]) + "&";
+          return key;
         });
       }
     }
 
     fetch(
-      options.services[service] +
+      cache.services[service] +
         uri +
         (localMethod === "GET" ? "?" + urlParam : ""),
       fetchData
     )
       .then((res) => {
         setLoading(false);
-
         if (res.status === 200) {
           res
             .json()
             .then((res) => {
-              setData(res);
+              if (res.errors) {
+                onError(res);
+                setError(res);
+              } else {
+                if (propsCache) {
+                  setCache({ [propsCache]: res });
+                }
+                if (state.active) {
+                  setData(res);
 
-              if (props.cache) {
-                setCache({ [props.cache]: res });
-              }
+                  if (propsCache) {
+                    setCache({ [propsCache]: res });
+                  }
 
-              if (props) {
-                if (props.onSuccess) {
-                  props.onSuccess(res);
+                  if (onSuccess) {
+                    onSuccess(res);
+                  }
+                } else {
+                  console.log("state is not active");
                 }
               }
             })
             .catch((err) => {
-              setError(err);
+              if (state.active) {
+                setError(err);
 
-              if (props) {
-                if (props.onError) {
-                  props.onError(err);
+                if (onError) {
+                  onError(err);
                 }
+              } else {
+                console.log("state is not active");
               }
             });
         } else {
           res
             .json()
             .then((err) => {
-              if (props) {
-                if (props.onError) {
-                  props.onError(err);
+              if (state.active) {
+                if (onError) {
+                  onError(err);
                 }
               }
             })
             .catch((err) => {
-              setError(err);
+              if (state.active) {
+                setError(err);
 
-              if (props) {
-                if (props.onError) {
-                  props.onError(err);
+                if (onError) {
+                  onError(err);
                 }
               }
             });
         }
       })
       .catch((err) => {
-        if (props) {
-          if (props.onError) {
-            props.onError(err);
+        if (state.active) {
+          if (onError) {
+            onError({ errors: [{ message: "No Internet Connectivity" }] });
           }
+          setError({ errors: [{ message: "No Internet Connectivity" }] });
+
+          setLoading(false);
         }
-        setLoading(false);
       });
   };
+
+  React.useEffect(() => {
+    return () => {
+      state.active = false;
+    };
+  }, []);
 
   return { runFetch, error, data, loading };
 }

@@ -1,8 +1,7 @@
-import { useMutation } from "./useMutation";
-import gql from "graphql-tag";
+import useGraphql from "./useGraphql";
 import { getResetCachefn } from "./Cache";
 
-const LOGOUT_MUTATION = gql`
+const LOGOUT_MUTATION = `
   mutation logout {
     logout {
       status
@@ -10,10 +9,10 @@ const LOGOUT_MUTATION = gql`
   }
 `;
 export function useLogout(props) {
-  const resetCache = getResetCachefn;
+  const resetCache = getResetCachefn();
 
-  const { runMutation } = useMutation({
-    mutation: LOGOUT_MUTATION,
+  const { runGraphql } = useGraphql({
+    query: LOGOUT_MUTATION,
     onError: (err) => {
       if (props) {
         if (props.onError) {
@@ -42,7 +41,7 @@ export function useLogout(props) {
   });
 
   const runLogout = () => {
-    runMutation({});
+    runGraphql({});
   };
 
   return { runLogout };

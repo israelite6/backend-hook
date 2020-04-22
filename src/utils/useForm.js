@@ -1,31 +1,28 @@
 import React from "react";
-import validator from "validator";
 import UpdateObject from "./UpdateObject";
 
 function validation(condition) {
   const errors = {};
   const validate = {};
-  Object.keys(condition).map(field => {
+  Object.keys(condition).map((field) => {
     let error = [];
-    Object.keys(condition[field]).map(rule => {
+    Object.keys(condition[field]).map((rule) => {
       switch (rule) {
         case "email":
           if (
-            !validator.isEmail(
+            !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
               condition[field].value ? condition[field].value : ""
             ) &&
-            !validator.isEmpty(
-              condition[field].value ? condition[field].value : ""
-            )
+            String(condition[field].value ? condition[field].value : "")
+              .length !== 0
           ) {
             error.push(condition[field][rule]);
           }
           break;
         case "required":
           if (
-            validator.isEmpty(
-              condition[field].value ? condition[field].value : ""
-            )
+            String(condition[field].value ? condition[field].value : "")
+              .length === 0
           ) {
             error.push(condition[field][rule]);
           }
@@ -53,40 +50,40 @@ export function useForm(props) {
   const [data, setData] = React.useState({
     validationData: {},
     errors: {},
-    data: {}
+    data: {},
   });
 
-  const handleInput = event => {
+  const handleInput = (event) => {
     try {
       event.persist();
     } catch (e) {}
 
-    setData(r => {
+    setData((r) => {
       return {
         ...r,
         validationData: UpdateObject(r.validationData, {
-          [event.target.name]: { value: event.target.value }
+          [event.target.name]: { value: event.target.value },
         }),
         errors: validation(
           UpdateObject(r.validationData, {
-            [event.target.name]: { value: event.target.value }
+            [event.target.name]: { value: event.target.value },
           })
         ).errors,
         data: UpdateObject(r.data, {
-          [event.target.name]: event.target.value
-        })
+          [event.target.name]: event.target.value,
+        }),
       };
     });
   };
 
-  const onSubmit = submitCallback => event => {
+  const onSubmit = (submitCallback) => (event) => {
     if (event) {
       event.preventDefault();
     }
-    setData(r => {
+    setData((r) => {
       return {
         ...r,
-        errors: validation(r.validationData).errors
+        errors: validation(r.validationData).errors,
       };
     });
     if (Object.keys(validation(data.validationData).errors).length > 0) {
@@ -101,11 +98,11 @@ export function useForm(props) {
   const reset = () => {
     setData({ validationData: {}, errors: {}, data: {} });
   };
-  const setValidation = data => {
+  const setValidation = (data) => {
     //setdata({ validationData: data });
-    setData(r => ({
+    setData((r) => ({
       ...r,
-      validationData: UpdateObject(r.validationData, data)
+      validationData: UpdateObject(r.validationData, data),
     }));
   };
 
@@ -116,21 +113,21 @@ export function useForm(props) {
 
     try {
       if (fields) {
-        fields.map(fm => {
+        fields.map((fm) => {
           if (data[fm]) {
             handleInput({
               target: { name: fm, value: data[fm] },
-              persist: function() {}
+              persist: function () {},
             });
           }
           return fm;
         });
       } else {
-        Object.keys(data).map(field => {
+        Object.keys(data).map((field) => {
           if (data[field]) {
             handleInput({
               target: { name: field, value: data[field] },
-              persist: function() {}
+              persist: function () {},
             });
           }
 
@@ -142,7 +139,7 @@ export function useForm(props) {
     }
   };
 
-  const getInput = field => {
+  const getInput = (field) => {
     return data.data[field] ? data.data[field] : "";
   };
 
@@ -153,6 +150,6 @@ export function useForm(props) {
     setValidation,
     data,
     setInput,
-    getInput
+    getInput,
   };
 }

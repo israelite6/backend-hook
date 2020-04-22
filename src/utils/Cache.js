@@ -22,6 +22,6 @@ export function setResetCachefn(fn) {
   resetCache = fn;
 }
 
-export function getResetCachefn(fn) {
+export function getResetCachefn() {
   return resetCache;
 }
