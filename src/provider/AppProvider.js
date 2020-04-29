@@ -6,9 +6,7 @@ const loadCache = (options) => {
   let savedCache = {};
   try {
     savedCache = JSON.parse(localStorage.getItem(options.name + "_cache"));
-  } catch (e) {
-    console.log(e);
-  }
+  } catch (e) {}
 
   if (options) {
     return { ...savedCache, ...options };

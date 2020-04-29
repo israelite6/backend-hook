@@ -98,6 +98,7 @@ export default function useFetch({
             .json()
             .then((err) => {
               if (state.active) {
+                setError({ errors: [{ message: "Invalid server response" }] });
                 if (onError) {
                   onError(err);
                 }
@@ -105,7 +106,7 @@ export default function useFetch({
             })
             .catch((err) => {
               if (state.active) {
-                setError(err);
+                setError({ errors: [{ message: "Invalid server response" }] });
 
                 if (onError) {
                   onError(err);
