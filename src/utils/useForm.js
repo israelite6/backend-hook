@@ -49,7 +49,7 @@ export function useForm(props) {
   //const { cache, setCache } = React.useContext(AppContext);
   const [data, setData] = React.useState({
     validationData: {},
-    errors: {},
+    errors: { submitted: false },
     data: {},
   });
 
@@ -86,7 +86,13 @@ export function useForm(props) {
         errors: validation(r.validationData).errors,
       };
     });
-    if (Object.keys(validation(data.validationData).errors).length > 0) {
+    if (
+      Object.keys(validation(data.validationData).errors).filter(
+        (kf) => kf !== "submitted"
+      ).length > 0
+    ) {
+      setData((prev) => UpdateObject(prev, { errors: { submitted: true } }));
+
       return null;
     }
     if (submitCallback) {
@@ -149,6 +155,7 @@ export function useForm(props) {
     reset,
     setValidation,
     data,
+    errors: data.errors,
     setInput,
     getInput,
   };
