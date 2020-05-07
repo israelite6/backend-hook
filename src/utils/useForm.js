@@ -107,7 +107,12 @@ export function useForm(props) {
     }
   };
   const reset = () => {
-    setData({ validationData: {}, errors: {}, data: {} });
+    setData((prev) => {
+      Object.keys(prev.validationData).map((key) => {
+        prev.validationData[key].value = "";
+      });
+      return { ...prev, errors: {}, data: {} };
+    });
   };
   const setValidation = (data) => {
     //setdata({ validationData: data });
@@ -115,6 +120,7 @@ export function useForm(props) {
       ...r,
       validationData: UpdateObject(r.validationData, data),
     }));
+    console.log(data.validationData);
   };
 
   const setInput = (data, fields) => {
