@@ -52,6 +52,7 @@ export function useForm(props) {
     errors: { submitted: false },
     data: {},
   });
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
 
   const handleInput = (event) => {
     try {
@@ -64,11 +65,14 @@ export function useForm(props) {
         validationData: UpdateObject(r.validationData, {
           [event.target.name]: { value: event.target.value },
         }),
-        errors: validation(
-          UpdateObject(r.validationData, {
-            [event.target.name]: { value: event.target.value },
-          })
-        ).errors,
+        errors: {
+          ...validation(
+            UpdateObject(r.validationData, {
+              [event.target.name]: { value: event.target.value },
+            })
+          ).errors,
+          submitted: isSubmitted,
+        },
         data: UpdateObject(r.data, {
           [event.target.name]: event.target.value,
         }),
@@ -92,6 +96,7 @@ export function useForm(props) {
       ).length > 0
     ) {
       setData((prev) => UpdateObject(prev, { errors: { submitted: true } }));
+      setIsSubmitted(true);
 
       return null;
     }

@@ -13,6 +13,7 @@ export default function useFetch({
   const [data, setData] = React.useState();
   const [error, setError] = React.useState();
   const [loading, setLoading] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
   const setCache = getSetCache();
   const cache = getCache();
   const token = useStorage("token");
@@ -48,6 +49,9 @@ export default function useFetch({
       }
     }
 
+    setSuccess(false);
+    setError(null);
+
     fetch(
       cache.services[service] +
         uri +
@@ -68,6 +72,7 @@ export default function useFetch({
                   setCache({ [propsCache]: res });
                 }
                 if (state.active) {
+                  setSuccess(true);
                   setData(res);
 
                   if (propsCache) {
@@ -133,5 +138,5 @@ export default function useFetch({
     };
   }, []);
 
-  return { runFetch, error, data, loading };
+  return { runFetch, error, data, loading, success };
 }
