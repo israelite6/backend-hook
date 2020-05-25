@@ -36,7 +36,11 @@ export default function useGraphql({
 
   return {
     runGraphql,
-    error: error ? error.errors.map((err) => err.message).join("\n") : null,
+    error: error
+      ? error.errors
+        ? error.errors.map((err) => err.message).join("\n")
+        : null
+      : null,
     data: data ? data.data : null,
     loading,
     refetch,

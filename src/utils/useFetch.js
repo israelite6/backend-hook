@@ -136,6 +136,7 @@ export default function useFetch({
     return () => {
       state.active = false;
     };
+    // eslint-disable-next-line
   }, []);
 
   return { runFetch, error, data, loading, success };
