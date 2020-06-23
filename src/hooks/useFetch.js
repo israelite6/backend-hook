@@ -1,5 +1,5 @@
 import React from "react";
-import { getSetCache, getCache } from "./Cache";
+import { getSetCache, getCache } from "./../utils/Cache";
 import useStorage from "./useStorage";
 
 export default function useFetch({
@@ -10,6 +10,7 @@ export default function useFetch({
   onError,
   onSuccess,
 }) {
+  const [controller] = React.useState(new AbortController());
   const [data, setData] = React.useState();
   const [error, setError] = React.useState();
   const [loading, setLoading] = React.useState(false);
@@ -36,6 +37,7 @@ export default function useFetch({
         Accept: "application/json",
         authorization: token.get() ? `Bearer ${token.get()}` : "",
       }),
+      signal: controller.signal,
     };
 
     if (localMethod !== "GET") {
@@ -53,7 +55,7 @@ export default function useFetch({
     setError(null);
 
     fetch(
-      cache.services[service] +
+      (cache.services ? cache.services[service] : "undefined") +
         uri +
         (localMethod === "GET" ? "?" + urlParam : ""),
       fetchData
@@ -135,6 +137,7 @@ export default function useFetch({
   React.useEffect(() => {
     return () => {
       state.active = false;
+      controller.abort();
     };
     // eslint-disable-next-line
   }, []);

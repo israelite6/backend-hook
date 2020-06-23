@@ -1,7 +1,8 @@
 import React from "react";
-import useStore from "./../utils/useStore";
+import useStore from "./../hooks/useStore";
 import { setCacheFn, setCacheData, setResetCachefn } from "./../utils/Cache";
-let counter = 0;
+import Signature from "./../utils/Signature";
+
 const loadCache = (options) => {
   let savedCache = {};
   try {
@@ -9,7 +10,20 @@ const loadCache = (options) => {
   } catch (e) {}
 
   if (options) {
-    return { ...savedCache, ...options };
+    if (!savedCache) {
+      savedCache = {};
+    }
+    if (Object.keys(savedCache).length === 0) {
+      Object.assign(options, { opxi: Signature().generate() });
+      return { ...savedCache, ...options };
+    } else {
+      if (savedCache.hasOwnProperty("opxi")) {
+        if (Signature().verify(savedCache.opxi)) {
+          return { ...savedCache, ...options };
+        }
+      }
+      return {};
+    }
   } else {
     return {};
   }
@@ -17,10 +31,6 @@ const loadCache = (options) => {
 
 export function AppProvider(props) {
   const { cache, setCache } = useStore(loadCache(props.options));
-
-  if (counter === 0) {
-    loadCache();
-  }
 
   setCacheFn(setCache);
   setCacheData(cache);
@@ -41,7 +51,5 @@ export function AppProvider(props) {
     });
   });
 
-  counter++;
-  console.log(counter);
   return <React.Fragment>{children}</React.Fragment>;
 }

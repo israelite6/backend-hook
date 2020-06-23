@@ -1,6 +1,6 @@
 import useGrpahql from "./useGraphql";
 import useStorage from "./useStorage";
-import { getSetCache } from "./Cache";
+import { getSetCache } from "./../utils/Cache";
 
 const UPDATE_LOGIN = `
   mutation loginUpdate {
@@ -15,7 +15,7 @@ const UPDATE_LOGIN = `
 `;
 const RUN_UPDATE_LOGIN = { status: false };
 
-export function useLogin() {
+export default function useLogin() {
   const token = useStorage("token");
   const features = useStorage("features");
   const setCache = getSetCache();

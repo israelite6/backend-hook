@@ -1,6 +1,6 @@
 import React from "react";
 
-export function usePagination() {
+export default function usePagination() {
   const [buttons, setButtons] = React.useState([]);
   const [pages, setPages] = React.useState(0);
   const [remain, setRemain] = React.useState(false);

@@ -1,5 +1,5 @@
 import useGraphql from "./useGraphql";
-import { getResetCachefn } from "./Cache";
+import { getResetCachefn } from "./../utils/Cache";
 
 const LOGOUT_MUTATION = `
   mutation logout {
@@ -8,7 +8,7 @@ const LOGOUT_MUTATION = `
     }
   }
 `;
-export function useLogout(props) {
+export default function useLogout(props) {
   const resetCache = getResetCachefn();
 
   const { runGraphql } = useGraphql({

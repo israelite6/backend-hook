@@ -1,5 +1,5 @@
 import React from "react";
-import UpdateObject from "./UpdateObject";
+import UpdateObject from "./../utils/UpdateObject";
 
 function validation(condition) {
   const errors = {};
@@ -21,7 +21,7 @@ function validation(condition) {
           break;
         case "required":
           if (
-            String(condition[field].value ? condition[field].value : "")
+            String(condition[field].value ? condition[field].value : "").trim()
               .length === 0
           ) {
             error.push(condition[field][rule]);
@@ -44,7 +44,8 @@ function validation(condition) {
 
   return { validate: validate, errors: errors };
 }
-export function useForm(props) {
+
+export default function useForm(props) {
   //const { data, setdata } = context;
   //const { cache, setCache } = React.useContext(AppContext);
   const [data, setData] = React.useState({
@@ -60,21 +61,23 @@ export function useForm(props) {
     } catch (e) {}
 
     setData((r) => {
+      let value = event.target.value;
+
       return {
         ...r,
         validationData: UpdateObject(r.validationData, {
-          [event.target.name]: { value: event.target.value },
+          [event.target.name]: { value: value },
         }),
         errors: {
           ...validation(
             UpdateObject(r.validationData, {
-              [event.target.name]: { value: event.target.value },
+              [event.target.name]: { value: value },
             })
           ).errors,
           submitted: isSubmitted,
         },
         data: UpdateObject(r.data, {
-          [event.target.name]: event.target.value,
+          [event.target.name]: value,
         }),
       };
     });
@@ -100,10 +103,17 @@ export function useForm(props) {
 
       return null;
     }
+    let d = data.data;
+    Object.keys(d).map((key) => {
+      if (typeof d[key] === "string") {
+        d[key] = d[key].trim();
+      }
+      return key;
+    });
     if (submitCallback) {
-      return submitCallback(data.data);
+      return submitCallback(d);
     } else {
-      return data.data;
+      return d;
     }
   };
   const reset = () => {
@@ -165,7 +175,7 @@ export function useForm(props) {
     onSubmit,
     reset,
     setValidation,
-    data,
+    data: data.data,
     errors: data.errors,
     setInput,
     getInput,

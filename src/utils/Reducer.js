@@ -22,5 +22,18 @@ export function Reducer(state, newState) {
     setCacheData(d);
     return d;
   }
+
+  // if (state.name || newState.name) {
+  //   if (newState.resetCache) {
+  //     delete newState.resetCache;
+  //     Cookie(newState.name + "_cache").removeAll();
+  //     return newState;
+  //   }
+  //   let d = Object.assign({}, UpdateObject(state, newState));
+  //   Cookie(newState.name + "_cache").set(JSON.stringify(d));
+
+  //   setCacheData(d);
+  //   return d;
+  // }
   return state;
 }

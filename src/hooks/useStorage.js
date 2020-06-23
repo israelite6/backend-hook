@@ -1,5 +1,5 @@
-import { getCache } from "./Cache";
-import UpdateObject from "./UpdateObject";
+import { getCache } from "./../utils/Cache";
+import UpdateObject from "./../utils/UpdateObject";
 
 export default function useStorage(key) {
   const cache = getCache();
@@ -14,12 +14,17 @@ export default function useStorage(key) {
   };
 
   const get = () => {
-    const data = getAll();
-    return data[key];
+    try {
+      const data = getAll()[key];
+      return data;
+    } catch (e) {
+      return null;
+    }
   };
 
   const getAll = () => {
     try {
+      console.log(cache);
       return JSON.parse(localStorage.getItem(cache.name + "_" + "cache"));
     } catch (e) {
       return {};

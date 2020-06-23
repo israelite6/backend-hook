@@ -22,21 +22,17 @@ import { AppProvider } from "backend-hook";
 function App() {
   const options = {
     name: "tellit",
-    graphqlUrl: "http://localhost:8081/v1/graphql",
-
     services: {
       //payment: "http://localhost:8083",
-      auth: "http://localhost:8083"
+      app: "http://localhost:8083",
     },
-    LoadingBar: Component,
-    ErrorBoard: ErrorBoard,
     Loader: () => (
       <React.Fragment>
         <div style={{ textAlign: "center" }}>
           <img src="/assets/img/loader.svg" width="100" />
         </div>
       </React.Fragment>
-    )
+    ),
   };
   const defaltCache = {};
 
@@ -103,12 +99,12 @@ import { useFetch } from "backend-hook";
 
 function fetch(props) {
   const { runFetch, data } = useFetch({
-    onSuccess: res => {
+    onSuccess: (res) => {
       //statement
     },
-    onError: err => {
+    onError: (err) => {
       //statement
-    }
+    },
   });
 
   React.useEffect(() => {
@@ -116,7 +112,7 @@ function fetch(props) {
       service: "auth",
       uri: "/login",
       data: { name: "israel" },
-      method: "GET"
+      method: "GET",
     });
   }, []);
 }
@@ -131,12 +127,12 @@ import { FetchContainer, useFetch } from "backend-hook";
 
 function fetch(props) {
   const { runFetch, data, loading, error, reload } = useFetch({
-    onSuccess: res => {
+    onSuccess: (res) => {
       //statement
     },
-    onError: err => {
+    onError: (err) => {
       //statement
-    }
+    },
   });
 
   return (
@@ -162,16 +158,15 @@ Mutation is for making alteration in database like delete, update, and insert
 ```javascript
 import React from "react";
 import { useMutation } from "backend-hook";
-import gql from "graphql-tag";
 
-const INSERT = gql``;
+const INSERT = ``;
 
 function mutation(props) {
   const { runMutation, data, loading, error } = useMutation({
     mutation: INSERT,
-    onSuccess: res => {},
-    onError: err => {},
-    hideSuccessMessage: boolean
+    onSuccess: (res) => {},
+    onError: (err) => {},
+    hideSuccessMessage: boolean,
   });
 
   React.useEffect(() => {
@@ -185,9 +180,8 @@ function mutation(props) {
 ```javascript
 import React from 'react'
 import {useQuery} from 'backend-hook'
-import gql from 'graphql-tag'
 
-cont GET = gql``
+cont GET = ``
 
 function query(props){
 
@@ -219,13 +213,6 @@ function state(props) {
 
   setCache({ match: "fulltime" });
 }
-```
-
-For global app loading
-
-```javascript
-options.appLoading; //boolean default is false
-setOptions({ appLoading: true / false }); //to show or hide loading bar. and this also apply to any form of global state
 ```
 
 **For Redirect**
@@ -265,7 +252,10 @@ function LoginPage() {
 import { useLogout } from "backend-hook";
 
 function LoginPage() {
-  const { runLogout } = useLogout({ onSuccess: res => {}, onError: err => {} });
+  const { runLogout } = useLogout({
+    onSuccess: (res) => {},
+    onError: (err) => {},
+  });
 }
 ```
 
@@ -274,37 +264,26 @@ function LoginPage() {
 Upload component
 
 ```javascript
-import { Upload } from "backend-hook";
+import { useUpload } from "backend-hook";
 
-const handleSuccess = res => {};
-const handleProgress = progress => {
-  //progress is int
-};
-const handleChange = file => {
-  //file.target.files[0]
-};
 function UploadPage() {
-  return (
-    <Upload
-      onSuccess={handleSuccess}
-      onProgress={handleProgress}
-      onChange={handleChange}
-      hideProgress={"boolean"}
-      lable={"component or text"}
-      accept={"image/* or others"}
-      progressBarColor="secondary"
-      callbacks={[
-        {
-          mutation: "string",
-          variable: JSON.stringify({
-            upload_id: "id of uploaded will fill automatically"
-          })
-        }
-      ]}
-    />
-  );
+  const { progress, loading, runUpload, success, error } = useUpload({
+    onSuccess: (res) => {},
+    onError: (err) => {},
+  });
+
+  const handleUpload = (event) => {
+    runUpload({ file: event.target.files[0], resize });
+  };
+  return <input type="file" onChange={handleUpload} />;
 }
 ```
+
+resize: {
+width: int,
+height: int,
+fit: cover, contain, fill, inside or outside (default: cover),
+}
 
 **Pagination**
 
@@ -318,7 +297,7 @@ function Page(props) {
   runPagination({
     total: data.total.aggregate.count,
     currentPage: page,
-    perPage
+    perPage,
   });
 }
 ```
