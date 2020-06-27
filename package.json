@@ -53,8 +53,5 @@
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "crypto-js": "^4.0.0",
-    "parse": "^2.13.0"
-  }
+  "dependencies": {}
 }
