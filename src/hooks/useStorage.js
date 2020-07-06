@@ -24,7 +24,6 @@ export default function useStorage(key) {
 
   const getAll = () => {
     try {
-      console.log(cache);
       return JSON.parse(localStorage.getItem(cache.name + "_" + "cache"));
     } catch (e) {
       return {};

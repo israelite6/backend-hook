@@ -130,7 +130,6 @@ export default function useForm(props) {
       ...r,
       validationData: UpdateObject(r.validationData, data),
     }));
-    console.log(data.validationData);
   };
 
   const setInput = (data, fields) => {
@@ -141,7 +140,7 @@ export default function useForm(props) {
     try {
       if (fields) {
         fields.map((fm) => {
-          if (data[fm]) {
+          if (data[fm] || data[fm] === false) {
             handleInput({
               target: { name: fm, value: data[fm] },
               persist: function () {},
@@ -151,7 +150,7 @@ export default function useForm(props) {
         });
       } else {
         Object.keys(data).map((field) => {
-          if (data[field]) {
+          if (data[field] || data[field] === false) {
             handleInput({
               target: { name: field, value: data[field] },
               persist: function () {},
@@ -167,7 +166,9 @@ export default function useForm(props) {
   };
 
   const getInput = (field) => {
-    return data.data[field] ? data.data[field] : "";
+    return data.data[field] || data.data[field] === false
+      ? data.data[field]
+      : "";
   };
 
   return {
