@@ -4,7 +4,7 @@ import { getResetCachefn } from "./../utils/Cache";
 const LOGOUT_MUTATION = `
   mutation logout {
     logout {
-      response
+      result
     }
   }
 `;
