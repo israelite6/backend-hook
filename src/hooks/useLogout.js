@@ -11,7 +11,7 @@ const LOGOUT_MUTATION = `
 export default function useLogout(props) {
   const resetCache = getResetCachefn();
 
-  const { runGraphql } = useGraphql({
+  const fetch = useGraphql({
     query: LOGOUT_MUTATION,
     onError: (err) => {
       if (props) {
@@ -41,8 +41,8 @@ export default function useLogout(props) {
   });
 
   const runLogout = () => {
-    runGraphql({});
+    fetch.runGraphql({});
   };
 
-  return { runLogout };
+  return { runLogout, ...fetch };
 }
