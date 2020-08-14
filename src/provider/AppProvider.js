@@ -13,17 +13,18 @@ const loadCache = (options) => {
     if (!savedCache) {
       savedCache = {};
     }
-    if (Object.keys(savedCache).length === 0) {
-      Object.assign(options, { opxi: Signature().generate() });
-      return { ...savedCache, ...options };
-    } else {
-      if (savedCache.hasOwnProperty("opxi")) {
-        if (Signature().verify(savedCache.opxi)) {
-          return { ...savedCache, ...options };
-        }
-      }
-      return {};
-    }
+    return { ...savedCache, ...options };
+    // if (Object.keys(savedCache).length === 0) {
+    //   Object.assign(options, { opxi: Signature().generate() });
+    //   return { ...savedCache, ...options };
+    // } else {
+    //   if (savedCache.hasOwnProperty("opxi")) {
+    //     if (Signature().verify(savedCache.opxi)) {
+    //       return { ...savedCache, ...options };
+    //     }
+    //   }
+    //   return {};
+    // }
   } else {
     return {};
   }

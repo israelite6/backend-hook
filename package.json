@@ -1,6 +1,6 @@
 {
   "name": "backend-hook",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "description": "Hasura front end hook",
   "author": "israelite6",
   "license": "MIT",
