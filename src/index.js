@@ -19,7 +19,7 @@ import usePagination from "./hooks/usePagination";
 import CurrencyFormat from "./utils/CurrencyFormat";
 
 import md5 from "./utils/md5";
-import { Collect, setVariable, getVariable } from "./utils/SetterGetter";
+import { setVariable, getVariable } from "./utils/SetterGetter";
 import { getSetCache as setCache } from "./utils/Cache";
 
 export {
@@ -39,7 +39,6 @@ export {
   useCookie,
   md5,
   useState,
-  Collect,
   setVariable,
   getVariable,
   setCache,
