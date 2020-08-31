@@ -128,8 +128,14 @@ export default function useForm(props) {
     //setdata({ validationData: data });
     setData((r) => ({
       ...r,
-      validationData: UpdateObject(r.validationData, data),
+      validationData: {},
     }));
+    setTimeout(() => {
+      setData((r) => ({
+        ...r,
+        validationData: UpdateObject(r.validationData, data),
+      }));
+    });
   };
 
   const setInput = (data, fields) => {

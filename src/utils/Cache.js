@@ -14,7 +14,10 @@ export function getCache() {
   return cache;
 }
 
-export function getSetCache() {
+export function getSetCache(data) {
+  if (data) {
+    return setCache(data);
+  }
   return setCache;
 }
 

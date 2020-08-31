@@ -202,16 +202,14 @@ function query(props){
 
 ```javascript
 import React from "react";
-import { AppContext } from "backend-hook";
+import { setCache } from "backend-hook";
 
 function state(props) {
-  const { cache, setCache, options, setOptions, resetCache } = React.useContext(
-    AppContext
-  );
-
   setCache({ league: "football" });
 
   setCache({ match: "fulltime" });
+
+  //props.cache to access all cach value
 }
 ```
 
@@ -295,9 +293,27 @@ function Page(props) {
   const { runPagination } = usePagination();
 
   runPagination({
-    total: data.total.aggregate.count,
+    total: data.total.aggregate.count /*total number of rows*/ß,
     currentPage: page,
     perPage,
   });
+}
+```
+
+**Subscription**
+
+```javascript
+import React from "react";
+import { useSubscription } from "backend-hook";
+
+function Page(props) {
+  const { runSubscription, webSocket, onMessage(data), onError(data), onConnected(), onConnectionStatus() } = useSubscription({option, url});
+
+  runSubscription({
+    query, id, operationName
+  });
+
+  //operationName optional
+  //url: ws://graphql url
 }
 ```
