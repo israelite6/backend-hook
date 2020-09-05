@@ -33,7 +33,8 @@ export default function useSubscription({
   const token = useStorage("token");
 
   const setWebsocket = () => {
-    document.cookie = "Authorization=Bearer " + token.get() + "; path=/";
+    document.cookie =
+      "Authorization=Bearer " + token.get() + "; path=/; domain=classitrade.ng";
 
     let webSocket = new WebSocket(url, "graphql-ws");
     webSocket.onopen = function (event) {

@@ -6,6 +6,8 @@ export default function useGraphql({
   onSuccess: gqlOnSuccess,
   onError: gqlOnError,
   cache: propsCache,
+  persist,
+  fetchMode,
 }) {
   const [dataState, setDataState] = React.useState(null);
   const { runFetch, error, data, loading, success } = useFetch({
@@ -23,6 +25,8 @@ export default function useGraphql({
     service: "app",
     uri: "",
     cache: propsCache,
+    persist,
+    fetchMode,
   });
 
   const runGraphql = (data) => {

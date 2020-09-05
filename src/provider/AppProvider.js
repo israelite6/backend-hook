@@ -1,6 +1,11 @@
 import React from "react";
 import useStore, { useTempStore } from "./../hooks/useStore";
-import { setCacheFn, setCacheData, setResetCachefn } from "./../utils/Cache";
+import {
+  setCacheFn,
+  setCacheData,
+  setResetCachefn,
+  setTempCacheFn,
+} from "./../utils/Cache";
 import { setVariable } from "./../utils/SetterGetter";
 //import Signature from "./../utils/Signature";
 
@@ -36,10 +41,11 @@ const loadCache = (options) => {
 
 export function AppProvider(props) {
   const { cache, setCache } = useStore(loadCache(props.options));
-  const { tempCache, setTempCache } = useTempStore(loadCache());
+  const { tempCache, setTempCache } = useTempStore({});
 
   setCacheFn(setCache);
   setCacheData(cache);
+  setTempCacheFn(setTempCache);
 
   const resetCache = () => {
     if (props.options) {

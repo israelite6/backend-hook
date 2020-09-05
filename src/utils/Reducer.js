@@ -1,5 +1,5 @@
 import UpdateObject from "./UpdateObject";
-import { setCacheData } from "./Cache";
+import { setCacheData, setTempCacheData } from "./Cache";
 
 export function setExpireTime({ name, expires }) {
   const t = new Date();
@@ -26,17 +26,7 @@ export function Reducer(state, newState) {
 }
 
 export function TempReducer(state, newState) {
-  if (state.name || newState.name) {
-    if (newState.resetCache) {
-      delete newState.resetCache;
-
-      setCacheData(newState);
-      return newState;
-    }
-    let d = Object.assign({}, UpdateObject(state, newState));
-
-    setCacheData(d);
-    return d;
-  }
-  return state;
+  let d = Object.assign({}, UpdateObject(state, newState));
+  setTempCacheData(d);
+  return d;
 }

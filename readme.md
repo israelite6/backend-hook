@@ -25,19 +25,13 @@ function App() {
     services: {
       //payment: "http://localhost:8083",
       app: "http://localhost:8083",
+      uploadUrl: "",
     },
-    Loader: () => (
-      <React.Fragment>
-        <div style={{ textAlign: "center" }}>
-          <img src="/assets/img/loader.svg" width="100" />
-        </div>
-      </React.Fragment>
-    ),
   };
   const defaltCache = {};
 
   return (
-    <AppProvider options={options} default={defaultCache}>
+    <AppProvider options={options}>
       <BrowserRouter>
         <Switch>
           <Route path="/home" exact component={HomePage}></Route>
@@ -62,19 +56,18 @@ props.error is an object with array errors message.
 ```javascript
 import React from 'react';
 import {useForm} from 'backend-hook'
-import gql from 'graphql-tab';
 
-const ADD = gql``;
-const UDATE = gql``;
+const ADD = ``;
+const UDATE = ``;
 
 function form(props) {
 
-    const {handleInput, onSubmit, setInput, getInput, data: {errors, data}, setValidation} = useForm()
+    const {handleInput, onSubmit, setInput, getInput, data, errors, setValidation, reset} = useForm()
 
     const send = data => {
 
     }
-
+    //reset() to reset form
     React.useEffect(()=> {
         setValidation({name: {
             required: 'required message',
@@ -98,13 +91,17 @@ import React from "react";
 import { useFetch } from "backend-hook";
 
 function fetch(props) {
-  const { runFetch, data } = useFetch({
+  const { runFetch, data, error, success } = useFetch({
     onSuccess: (res) => {
       //statement
     },
     onError: (err) => {
       //statement
     },
+    cache: "cache_key",
+    persist: "true/false", //to save the data to localstorage
+    query: "mutation or query",
+    fetchMode: "once/always", //default is always
   });
 
   React.useEffect(() => {
@@ -118,91 +115,35 @@ function fetch(props) {
 }
 ```
 
-**FetchContainer**
-This component wrappes the component that render fetched Item to display loading, error, and fetchted items
-
-```javascript
-import React from "react";
-import { FetchContainer, useFetch } from "backend-hook";
-
-function fetch(props) {
-  const { runFetch, data, loading, error, reload } = useFetch({
-    onSuccess: (res) => {
-      //statement
-    },
-    onError: (err) => {
-      //statement
-    },
-  });
-
-  return (
-    <React.Fragment>
-      <FetchContainer
-        loading={loading}
-        error={error}
-        retry={reload}
-        emptyIcon={/*path to the image */}
-        emptyLabel="empty something"
-        data={data}
-      >
-        {...items}
-      </FetchContainer>
-    </React.Fragment>
-  );
-}
-```
-
-**Mutation**
+**useGraphql**
 Mutation is for making alteration in database like delete, update, and insert
 
 ```javascript
 import React from "react";
-import { useMutation } from "backend-hook";
+import { useGraphql } from "backend-hook";
 
 const INSERT = ``;
 
 function mutation(props) {
-  const { runMutation, data, loading, error } = useMutation({
-    mutation: INSERT,
+  const { runGraphql, data, loading, error, refetch } = useGraphql({
+    query: INSERT,
     onSuccess: (res) => {},
     onError: (err) => {},
-    hideSuccessMessage: boolean,
+    cache: "cache_key",
+    persist: "boolean", //save cache to localstorage
   });
 
   React.useEffect(() => {
-    runMutation({ objects: data });
+    runGraphql({ objects: data });
   });
 }
-```
-
-**Query backend**
-
-```javascript
-import React from 'react'
-import {useQuery} from 'backend-hook'
-
-cont GET = ``
-
-function query(props){
-
-   const {runQuery, data} = useQuery ({query: GET, variables: {}, onSuccess: res => {
-
-   }, onError: err => {
-
-   }})
-
-   React.useStat(()=> {
-       runQuery()
-   }, [])
-}
-
 ```
 
 **GLOBAL STATE MANAGEMENT**
 
 ```javascript
 import React from "react";
-import { setCache } from "backend-hook";
+import { setCache, setTempCache } from "backend-hook";
 
 function state(props) {
   setCache({ league: "football" });
@@ -210,22 +151,6 @@ function state(props) {
   setCache({ match: "fulltime" });
 
   //props.cache to access all cach value
-}
-```
-
-**For Redirect**
-
-```javascript
-
-import React from 'react'
-import {Redirect, ReloadPage} from 'backend-hook'
-
-funtion redirect (props) {
-
-    React.useEffect(()=> {
-        Redirect({to: '/to/page', history: props.history, params: {}})
-        ReloadPage({history: props.history, location: props.location})
-    }, [])
 }
 ```
 

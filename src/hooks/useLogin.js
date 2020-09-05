@@ -15,17 +15,23 @@ const UPDATE_LOGIN = `
 `;
 const RUN_UPDATE_LOGIN = { status: false };
 
-export default function useLogin() {
+export default function useLogin(props) {
   const token = useStorage("token");
   const features = useStorage("features");
   const setCache = getSetCache();
-  const { runGraphql } = useGrpahql({
+  const fetchUpdate = useGrpahql({
     query: UPDATE_LOGIN,
     onSuccess: (res) => {
+      if (props.onUpdateSuccess) {
+        props.onUpdateSuccess(res);
+      }
       runLogin(res.loginUpdate);
     },
-    onError: (err) => {},
-    hideSuccessMessage: true,
+    onError: (err) => {
+      if (props.onUpdateError) {
+        props.onUpdateError(err);
+      }
+    },
   });
 
   const runLogin = ({ user_id, features, role, token, ban }) => {
@@ -76,10 +82,17 @@ export default function useLogin() {
     if (!RUN_UPDATE_LOGIN.status) {
       if (isLoggedIn()) {
         Object.assign(RUN_UPDATE_LOGIN, { status: true });
-        runGraphql({});
+        fetchUpdate.runGraphql({});
       }
     }
   };
 
-  return { runLogin, isLoggedIn, showLoginDialog, runUpdateLogin, isExist };
+  return {
+    runLogin,
+    isLoggedIn,
+    showLoginDialog,
+    runUpdateLogin,
+    isExist,
+    fetchUpdate,
+  };
 }

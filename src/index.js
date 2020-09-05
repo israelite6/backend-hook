@@ -3,7 +3,6 @@
  */
 
 import { AppProvider } from "./provider/AppProvider";
-import { Redirect, ReloadPage } from "./utils/ReloadPage";
 import useForm from "./hooks/useForm";
 import useFetch from "./hooks/useFetch";
 import useStorage from "./hooks/useStorage";
@@ -20,12 +19,10 @@ import CurrencyFormat from "./utils/CurrencyFormat";
 
 import md5 from "./utils/md5";
 import { setVariable, getVariable } from "./utils/SetterGetter";
-import { getSetCache as setCache } from "./utils/Cache";
+import { getSetCache as setCache, setTempCache } from "./utils/Cache";
 
 export {
   AppProvider,
-  Redirect,
-  ReloadPage,
   useForm,
   useFetch,
   useStorage,
@@ -43,4 +40,5 @@ export {
   getVariable,
   setCache,
   useSubscription,
+  setTempCache,
 };

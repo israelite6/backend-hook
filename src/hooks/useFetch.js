@@ -1,5 +1,10 @@
 import React from "react";
-import { getSetCache, getCache } from "./../utils/Cache";
+import {
+  getSetCache,
+  getCache,
+  getTempCache,
+  setTempCache,
+} from "./../utils/Cache";
 import useStorage from "./useStorage";
 
 export default function useFetch({
@@ -9,6 +14,8 @@ export default function useFetch({
   cache: propsCache,
   onError,
   onSuccess,
+  persist,
+  fetchMode,
 }) {
   const [controller] = React.useState(new AbortController());
   const [data, setData] = React.useState();
@@ -17,12 +24,32 @@ export default function useFetch({
   const [success, setSuccess] = React.useState(false);
   const setCache = getSetCache();
   const cache = getCache();
+  const tempCache = getTempCache();
   const token = useStorage("token");
   const state = { active: true };
 
   const runFetch = (data) => {
     if (propsCache) {
-      setData(cache[propsCache]);
+      if (persist) {
+        setData(cache[propsCache]);
+      } else {
+        setData(tempCache[propsCache]);
+      }
+    }
+    if (fetchMode === "once") {
+      if (propsCache) {
+        if (persist) {
+          if (cache[propsCache]) {
+            onSuccess(cache[propsCache]);
+            return;
+          }
+        } else {
+          if (tempCache[propsCache]) {
+            onSuccess(tempCache[propsCache]);
+            return;
+          }
+        }
+      }
     }
 
     const localMethod = method ? method : "GET";
@@ -71,16 +98,15 @@ export default function useFetch({
                 setError(res);
               } else {
                 if (propsCache) {
-                  setCache({ [propsCache]: res });
+                  if (persist) {
+                    setCache({ [propsCache]: res });
+                  } else {
+                    setTempCache({ [propsCache]: res });
+                  }
                 }
                 if (state.active) {
                   setSuccess(true);
                   setData(res);
-
-                  if (propsCache) {
-                    setCache({ [propsCache]: res });
-                  }
-
                   if (onSuccess) {
                     onSuccess(res);
                   }
