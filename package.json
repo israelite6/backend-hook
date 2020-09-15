@@ -52,7 +52,5 @@
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "collect.js": "^4.28.2"
-  }
+  "dependencies": {}
 }
