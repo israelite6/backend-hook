@@ -160,7 +160,10 @@ function state(props) {
 import { useLogin } from "backend-hook";
 
 function LoginPage() {
-  const { runLogin, isLoggedIn, runUpdateLogin } = useLogin();
+  const { runLogin, isLoggedIn, runUpdateLogin } = useLogin({
+    onUpdateSuccess: (res) => {},
+    onUpdateError: (res) => {},
+  });
 
   runLogin({ user_id, role, features, token }); // to set data for login;
   isLoggedIn(); //check if the is logged in.

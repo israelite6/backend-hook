@@ -3,13 +3,9 @@ import useStorage from "./useStorage";
 import { getSetCache } from "./../utils/Cache";
 
 const UPDATE_LOGIN = `
-  mutation loginUpdate {
-    loginUpdate {
-      user_id
-      features
-      role
-      token
-      ban
+  mutation login_update {
+    login_update {
+      result
     }
   }
 `;
@@ -25,7 +21,7 @@ export default function useLogin(props) {
       if (props.onUpdateSuccess) {
         props.onUpdateSuccess(res);
       }
-      runLogin(res.loginUpdate);
+      //runLogin(res.loginUpdate);
     },
     onError: (err) => {
       if (props.onUpdateError) {
@@ -43,7 +39,7 @@ export default function useLogin(props) {
       ban,
     };
     try {
-      setCache(user);
+      //setCache(user);
     } catch (err) {}
   };
 

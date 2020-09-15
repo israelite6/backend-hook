@@ -30,8 +30,16 @@ export default function useGraphql({
   });
 
   const runGraphql = (data) => {
+    let headers = null;
+    if (data) {
+      if (data.hasOwnProperty("where")) {
+        headers = { where: JSON.stringify(data.where) };
+        delete data.where;
+      }
+    }
+
     setDataState({ query, variables: data });
-    runFetch({ query, variables: data });
+    runFetch({ query, variables: data }, headers);
   };
 
   const refetch = () => {

@@ -16,6 +16,7 @@ export default function useFetch({
   onSuccess,
   persist,
   fetchMode,
+  headers: propsHeader,
 }) {
   const [controller] = React.useState(new AbortController());
   const [data, setData] = React.useState();
@@ -27,8 +28,11 @@ export default function useFetch({
   const tempCache = getTempCache();
   const token = useStorage("token");
   const state = { active: true };
+  const headers = propsHeader || {};
 
-  const runFetch = (data) => {
+  const runFetch = (data, header) => {
+    Object.assign(headers, { ...(header || {}) });
+
     if (propsCache) {
       if (persist) {
         setData(cache[propsCache]);
@@ -63,6 +67,7 @@ export default function useFetch({
         "Content-Type": "application/json",
         Accept: "application/json",
         authorization: token.get() ? `Bearer ${token.get()}` : "",
+        ...headers,
       }),
       signal: controller.signal,
     };
