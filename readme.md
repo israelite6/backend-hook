@@ -28,10 +28,19 @@ function App() {
       uploadUrl: "",
     },
   };
-  const defaltCache = {};
+  const firebaseConfig = {
+    apiKey: "AIzaSyC_U0YcUQcj_GvcNW4yDT4kH5UGJ7v25Oc",
+    authDomain: "test-57e4e.firebaseapp.com",
+    databaseURL: "https://test-57e4e.firebaseio.com",
+    projectId: "test-57e4e",
+    storageBucket: "test-57e4e.appspot.com",
+    messagingSenderId: "827256107469",
+    appId: "1:827256107469:web:56a78296977e9347d21484",
+    measurementId: "G-HV6FNMSPZY",
+  };
 
   return (
-    <AppProvider options={options}>
+    <AppProvider options={options} firebaseConfig={firebaseConfig}>
       <BrowserRouter>
         <Switch>
           <Route path="/home" exact component={HomePage}></Route>
@@ -243,5 +252,48 @@ function Page(props) {
 
   //operationName optional
   //url: ws://graphql url
+}
+```
+
+**Social Authentication**
+
+```javascript
+import { useSocialAuth } from "backend-hook";
+
+function Page(props) {
+  const { runFacebook, runGoogle } = useSocialAuth({ scope: [] });
+
+  const facebook = async () => {
+    try {
+      let facebookRes = await runFacebook();
+    } catch (e) {}
+  };
+}
+```
+
+In index.html add the following files
+
+```html
+<!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
+
+<!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+<script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-analytics.js"></script>
+
+<!-- Add Firebase products that you want to use -->
+<script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+```
+
+Finally add firebase config to the app.js
+
+**Global Variables**
+
+```javascript
+import { Store } from "backend-hook";
+
+function Page(props) {
+  Store(key).set(data); //set set
+  Store(key).get(); //get data
 }
 ```

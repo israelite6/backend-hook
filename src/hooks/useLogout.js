@@ -17,6 +17,10 @@ export default function useLogout(props) {
       if (props) {
         if (props.onError) {
           props.onError(err);
+          resetCache();
+          if (props.onSuccess) {
+            props.onSuccess(err);
+          }
         }
       }
     },
@@ -28,15 +32,6 @@ export default function useLogout(props) {
           props.onSuccess(res);
         }
       }
-
-      // Object.keys(localStorage).map(key => {
-      //   let keys = key.split("_");
-      //   if (keys[0] === options.name) {
-      //     localStorage.removeItem(key);
-      //   }
-      //   resetCache();
-
-      // });
     },
   });
 

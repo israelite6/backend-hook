@@ -7,6 +7,7 @@ import {
   setTempCacheFn,
 } from "./../utils/Cache";
 import { setVariable } from "./../utils/SetterGetter";
+import { firebaseInit } from "./../hooks/useSocialAuth";
 //import Signature from "./../utils/Signature";
 
 const loadCache = (options) => {
@@ -39,8 +40,8 @@ const loadCache = (options) => {
   }
 };
 
-export function AppProvider(props) {
-  const { cache, setCache } = useStore(loadCache(props.options));
+export function AppProvider({ options, firebaseConfig, ...props }) {
+  const { cache, setCache } = useStore(loadCache(options));
   const { tempCache, setTempCache } = useTempStore({});
 
   setCacheFn(setCache);
@@ -48,8 +49,8 @@ export function AppProvider(props) {
   setTempCacheFn(setTempCache);
 
   const resetCache = () => {
-    if (props.options) {
-      setCache({ resetCache: true, ...props.options });
+    if (options) {
+      setCache({ resetCache: true, ...options });
     }
   };
 
@@ -63,6 +64,12 @@ export function AppProvider(props) {
       setTempCache,
     });
   });
+
+  React.useEffect(() => {
+    if (firebaseConfig) {
+      firebaseInit(firebaseConfig);
+    }
+  }, []);
 
   return <React.Fragment>{children}</React.Fragment>;
 }

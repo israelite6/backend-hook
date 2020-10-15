@@ -18,14 +18,19 @@ export default function useLogin(props) {
   const fetchUpdate = useGrpahql({
     query: UPDATE_LOGIN,
     onSuccess: (res) => {
-      if (props.onUpdateSuccess) {
-        props.onUpdateSuccess(res);
+      if (props) {
+        if (props.onUpdateSuccess) {
+          props.onUpdateSuccess(res);
+        }
       }
+
       //runLogin(res.loginUpdate);
     },
     onError: (err) => {
-      if (props.onUpdateError) {
-        props.onUpdateError(err);
+      if (props) {
+        if (props.onUpdateError) {
+          props.onUpdateError(err);
+        }
       }
     },
   });

@@ -154,7 +154,7 @@ export default function useFetch({
         }
       })
       .catch((err) => {
-        if (state.active) {
+        if (err.code !== 20) {
           if (onError) {
             onError({ errors: [{ message: "No Internet Connectivity" }] });
           }

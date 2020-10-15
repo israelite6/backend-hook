@@ -33,10 +33,7 @@ export default function useSubscription({
   const token = useStorage("token");
 
   const setWebsocket = () => {
-    document.cookie =
-      "Authorization=Bearer " + token.get() + "; path=/; domain=classitrade.ng";
-
-    let webSocket = new WebSocket(url, "graphql-ws");
+    let webSocket = new WebSocket(url, ["graphql-ws", token.get()]);
     webSocket.onopen = function (event) {
       webSocket.send(
         JSON.stringify({
@@ -44,7 +41,7 @@ export default function useSubscription({
           payload: options || {},
         })
       );
-      setState({ webSocket, connected: true });
+      setState({ webSocket, connected: true, id: [] });
     };
   };
 
@@ -58,12 +55,25 @@ export default function useSubscription({
   };
 
   const closeWebSocket = () => {
-    state.webSocket.send(
-      JSON.stringify({
-        type: GQL.CONNECTION_TERMINATE,
-      })
-    );
+    try {
+      state.webSocket.send(
+        JSON.stringify({
+          type: GQL.CONNECTION_TERMINATE,
+        })
+      );
+      setState({ connected: false });
+      setTimeout(() => state.webSocket.close(), 1000);
+    } catch (e) {}
   };
+
+  const restartWebSocket = () => {
+    closeWebSocket();
+    setTimeout(() => {
+      setWebsocket();
+    }, 3000);
+  };
+
+  const attemptReconnection = () => {};
 
   const runSubscription = ({ query, id, data, operationName }) => {
     setState({ id: state.id.push(id) });
@@ -83,6 +93,13 @@ export default function useSubscription({
     if (token.get()) {
       setWebsocket();
     }
+
+    window.onbeforeunload = () => {
+      try {
+        state.webSocket.onclose = function () {}; // disable onclose handler first
+        state.webSocket.close();
+      } catch (e) {}
+    };
 
     return () => {
       try {
@@ -139,5 +156,7 @@ export default function useSubscription({
     webSocket: state.webSocket,
     runSubscription,
     stopWebSocket,
+    closeWebSocket,
+    restartWebSocket,
   };
 }
