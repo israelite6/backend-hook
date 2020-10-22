@@ -290,10 +290,33 @@ Finally add firebase config to the app.js
 **Global Variables**
 
 ```javascript
-import { Store } from "backend-hook";
+import { Store,  Sort, SortDesc } from "backend-hook";
 
 function Page(props) {
   Store(key).set(data); //set set
   Store(key).get(); //get data
+  Store(key).init({unique: 'column', upsert: ['column', 'column']) //
+  Store(key).insert(data) //data can be array or object
+  Store(key).upsert(data) //data can be array or object
+  Store(key).update(condition, data) //condition is object and data is object
+  Store(key).delete(condition) //condition can be object or array
+  Store(key).select(condition) //condition is object and optional
+
+  Sort(data, key) //data is data to sort  and key is sortBy in asending order
+  SortDesc(data, key) //data is data to sort  and key is sortBy in desending order
+
+  //example
+  Store("collect")
+  .init({ unique: "id", upsert: ["id"] })
+  .insert([
+    { id: 1, name: "israel" },
+    { id: 2, name: "israel" },
+    { id: 1, name: "ifeoluwa" },
+  ])
+  .upsert({ id: 1, name: "israel" })
+  .update({ name: "israel" }, { name: "abiodun" })
+  .remove([{ id: 1 }])
+  .select();
+
 }
 ```

@@ -15,6 +15,9 @@ export const GQL = {
   COMPLETE: "complete",
 };
 
+var socketLiveCounter = 0;
+var socketLiveInterval = null;
+
 export default function useSubscription({
   url,
   options,
@@ -29,11 +32,18 @@ export default function useSubscription({
     connected: false,
     websocket: null,
     id: [],
+    interval: null,
   });
   const token = useStorage("token");
 
   const setWebsocket = () => {
     let webSocket = new WebSocket(url, ["graphql-ws", token.get()]);
+
+    webSocket.onerror = (e) => {
+      setTimeout(() => {
+        attemptReconnection();
+      }, 5000);
+    };
     webSocket.onopen = function (event) {
       webSocket.send(
         JSON.stringify({
@@ -41,6 +51,15 @@ export default function useSubscription({
           payload: options || {},
         })
       );
+
+      socketLiveInterval = setInterval(() => {
+        if (socketLiveCounter === 5) {
+          attemptReconnection();
+          socketLiveCounter = 0;
+        } else {
+          socketLiveCounter++;
+        }
+      }, 2000);
       setState({ webSocket, connected: true, id: [] });
     };
   };
@@ -64,6 +83,10 @@ export default function useSubscription({
       setState({ connected: false });
       setTimeout(() => state.webSocket.close(), 1000);
     } catch (e) {}
+
+    try {
+      clearInterval(socketLiveInterval);
+    } catch (e) {}
   };
 
   const restartWebSocket = () => {
@@ -73,7 +96,10 @@ export default function useSubscription({
     }, 3000);
   };
 
-  const attemptReconnection = () => {};
+  const attemptReconnection = () => {
+    restartWebSocket();
+    console.log("attemptReconnection");
+  };
 
   const runSubscription = ({ query, id, data, operationName }) => {
     setState({ id: state.id.push(id) });
@@ -111,9 +137,11 @@ export default function useSubscription({
     if (state.connected) {
       state.webSocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        socketLiveCounter = 0;
         if (onLog) {
           onLog(data);
         }
+
         switch (data.type) {
           case GQL.CONNECTION_ACK: {
             if (onConnected) {
