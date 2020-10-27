@@ -1,11 +1,21 @@
 export default function UpdateObject(prevData, newData) {
+  let replace = false;
+  if (!Array.isArray(newData) && typeof newData === "object") {
+    if (newData.replace === true) {
+      replace = true;
+      console.log(replace, "========== replace is  true", newData);
+      delete newData.replace;
+      return newData;
+    }
+  }
   if (typeof newData === "object") {
     Object.keys(newData).map((dataMapKey) => {
       if (!prevData || prevData === false) {
         prevData[dataMapKey] = newData[dataMapKey];
       } else if (
         !prevData.hasOwnProperty(dataMapKey) ||
-        prevData.hasOwnProperty(dataMapKey) === false
+        prevData.hasOwnProperty(dataMapKey) === false ||
+        replace === true
       ) {
         prevData[dataMapKey] = newData[dataMapKey];
       } else {
@@ -28,7 +38,12 @@ export default function UpdateObject(prevData, newData) {
             if (newData[dataMapKey] === null) {
               delete prevData[dataMapKey];
             } else {
-              if (!prevData[dataMapKey] || prevData[dataMapKey] === false) {
+              if (
+                !prevData[dataMapKey] ||
+                prevData[dataMapKey] === false ||
+                replace === true
+              ) {
+                console.log(replace, " =========== replace");
                 prevData[dataMapKey] = newData[dataMapKey];
               } else {
                 prevData[dataMapKey] = UpdateObject(
