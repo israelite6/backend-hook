@@ -11,13 +11,21 @@ export default function UpdateObject(prevData, newData) {
   if (typeof newData === "object") {
     Object.keys(newData).map((dataMapKey) => {
       if (!prevData || prevData === false) {
-        prevData[dataMapKey] = newData[dataMapKey];
+        if (newData[dataMapKey] === "emptyObject") {
+          prevData[dataMapKey] = {};
+        } else {
+          prevData[dataMapKey] = newData[dataMapKey];
+        }
       } else if (
         !prevData.hasOwnProperty(dataMapKey) ||
         prevData.hasOwnProperty(dataMapKey) === false ||
         replace === true
       ) {
-        prevData[dataMapKey] = newData[dataMapKey];
+        if (newData[dataMapKey] === "emptyObject") {
+          prevData[dataMapKey] = {};
+        } else {
+          prevData[dataMapKey] = newData[dataMapKey];
+        }
       } else {
         if (typeof newData[dataMapKey] !== "object") {
           if (newData[dataMapKey] === "emptyObject") {
@@ -43,7 +51,6 @@ export default function UpdateObject(prevData, newData) {
                 prevData[dataMapKey] === false ||
                 replace === true
               ) {
-                console.log(replace, " =========== replace");
                 prevData[dataMapKey] = newData[dataMapKey];
               } else {
                 prevData[dataMapKey] = UpdateObject(

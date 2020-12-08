@@ -1,6 +1,6 @@
 import { getCache } from "./../utils/Cache";
 import UpdateObject from "./../utils/UpdateObject";
-import { getVariable } from "./../utils/SetterGetter";
+import { Store } from "./../utils/SetterGetter";
 
 export default function useStorage(key) {
   const cache = getCache();
@@ -26,7 +26,7 @@ export default function useStorage(key) {
   const getAll = () => {
     try {
       return JSON.parse(
-        localStorage.getItem(`${getVariable("config")["name"]}_cache`)
+        localStorage.getItem(`${Store("config").get()["name"]}_cache`)
       );
     } catch (e) {
       return {};

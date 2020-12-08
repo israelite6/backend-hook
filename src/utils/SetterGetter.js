@@ -1,14 +1,11 @@
 let Variables = { collect: {}, config: {}, db: {}, dbConfig: {} };
 
-export const setVariable = ({ key, value }) => {
-  Variables[key] = value;
-};
-
-export const getVariable = (key) => {
-  return Variables[key];
-};
-
 export function Store(key) {
+  const clear = () => {
+    Object.keys(Variables.db).map((key) => {
+      Variables.db[key] = [];
+    });
+  };
   const set = (value) => {
     Variables[key] = value;
     return Store(key);
@@ -21,7 +18,6 @@ export function Store(key) {
   const init = (options) => {
     Variables.dbConfig[key] = options || {};
     Variables.db[key] = [];
-    console.log(Variables);
     return Store(key);
   };
 
@@ -174,20 +170,31 @@ export function Store(key) {
     }
   };
 
-  return { set, get, init, insert, upsert, update, remove, select, removeAll };
+  return {
+    set,
+    get,
+    init,
+    insert,
+    upsert,
+    update,
+    remove,
+    select,
+    removeAll,
+    clear,
+  };
 }
 
 export function Sort(data, key) {
   return data.sort(function (a, b) {
     if (a[key] < b[key]) return -1;
-    if (a[key] > a[key]) return 1;
+    if (a[key] > b[key]) return 1;
     return 0;
   });
 }
 export function SortDesc(data, key) {
   return data.sort(function (a, b) {
     if (a[key] > b[key]) return -1;
-    if (a[key] < a[key]) return 1;
+    if (a[key] < b[key]) return 1;
     return 0;
   });
 }

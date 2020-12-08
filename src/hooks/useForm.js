@@ -34,6 +34,33 @@ function validation(condition) {
             error.push(val[1]);
           }
           break;
+        case "minLength":
+          let valMin = condition[field][rule].split("|");
+
+          if (
+            String(condition[field].value || "").length < parseInt(valMin[0])
+          ) {
+            error.push(valMin[1]);
+          }
+          break;
+        case "minLength":
+          let valMax = condition[field][rule].split("|");
+
+          if (
+            cString(condition[field].value || "").length > parseInt(valMax[0])
+          ) {
+            error.push(valMax[1]);
+          }
+          break;
+        case "eqLength":
+          let valEq = condition[field][rule].split("|");
+
+          if (
+            String(condition[field].value || "").length !== parseInt(valEq[0])
+          ) {
+            error.push(valEq[1]);
+          }
+          break;
       }
     });
     if (error.length > 0) {

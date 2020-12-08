@@ -19,13 +19,7 @@ import usePagination from "./hooks/usePagination";
 import CurrencyFormat from "./utils/CurrencyFormat";
 
 import md5 from "./utils/md5";
-import {
-  setVariable,
-  getVariable,
-  Store,
-  Sort,
-  SortDesc,
-} from "./utils/SetterGetter";
+import { Store, Sort, SortDesc } from "./utils/SetterGetter";
 import { getSetCache as setCache, setTempCache } from "./utils/Cache";
 
 export {
@@ -44,8 +38,6 @@ export {
   useSocialAuth,
   md5,
   useState,
-  setVariable,
-  getVariable,
   setCache,
   useSubscription,
   setTempCache,

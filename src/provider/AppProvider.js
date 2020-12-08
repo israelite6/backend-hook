@@ -6,7 +6,7 @@ import {
   setResetCachefn,
   setTempCacheFn,
 } from "./../utils/Cache";
-import { setVariable } from "./../utils/SetterGetter";
+import { Store } from "./../utils/SetterGetter";
 import { firebaseInit } from "./../hooks/useSocialAuth";
 //import Signature from "./../utils/Signature";
 
@@ -22,7 +22,7 @@ const loadCache = (options) => {
     }
     const data = { ...savedCache, ...options };
 
-    setVariable({ key: "config", value: data });
+    Store("config").set(data);
     return data;
     // if (Object.keys(savedCache).length === 0) {
     //   Object.assign(options, { opxi: Signature().generate() });
@@ -49,6 +49,7 @@ export function AppProvider({ options, firebaseConfig, ...props }) {
   setTempCacheFn(setTempCache);
 
   const resetCache = () => {
+    Store("all").clear();
     if (options) {
       setCache({ resetCache: true, ...options });
     }

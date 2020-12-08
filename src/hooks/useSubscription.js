@@ -30,13 +30,14 @@ export default function useSubscription({
 }) {
   const [state, setState] = useState({
     connected: false,
-    websocket: null,
+    webSocket: null,
     id: [],
     interval: null,
   });
   const token = useStorage("token");
 
   const setWebsocket = () => {
+    console.log("opening");
     let webSocket = new WebSocket(url, ["graphql-ws", token.get()]);
 
     webSocket.onerror = (e) => {
@@ -44,7 +45,9 @@ export default function useSubscription({
         attemptReconnection();
       }, 5000);
     };
-    webSocket.onopen = function (event) {
+
+    webSocket.onclose = () => {};
+    webSocket.onopen = (event) => {
       webSocket.send(
         JSON.stringify({
           type: GQL.CONNECTION_INIT,
@@ -60,6 +63,7 @@ export default function useSubscription({
           socketLiveCounter++;
         }
       }, 2000);
+      console.log(webSocket);
       setState({ webSocket, connected: true, id: [] });
     };
   };
@@ -81,6 +85,7 @@ export default function useSubscription({
         })
       );
       setState({ connected: false });
+
       setTimeout(() => state.webSocket.close(), 1000);
     } catch (e) {}
 

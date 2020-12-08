@@ -80,7 +80,10 @@ function form(props) {
     React.useEffect(()=> {
         setValidation({name: {
             required: 'required message',
-            email: 'required email'
+            email: 'required email',
+            minLength: '4|error message',
+            maxLength: '4|Error Message',
+            password: 'field|error message'
         }})
         props.location.state?setInput(props.location.state, ['rest', 'description']):''
     }, [])
