@@ -62,8 +62,10 @@ export default function useLogin(props) {
 
   const isExist = (feature) => {
     if (isLoggedIn()) {
-      if (features.get().filter((ff) => ff === feature).length > 0) {
-        return true;
+      if (features.get()) {
+        if (features.get().filter((ff) => ff === feature).length > 0) {
+          return true;
+        }
       }
     }
 
