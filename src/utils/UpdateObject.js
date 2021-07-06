@@ -3,7 +3,6 @@ export default function UpdateObject(prevData, newData) {
   if (!Array.isArray(newData) && typeof newData === "object") {
     if (newData.replace === true) {
       replace = true;
-      console.log(replace, "========== replace is  true", newData);
       delete newData.replace;
       return newData;
     }
@@ -51,7 +50,9 @@ export default function UpdateObject(prevData, newData) {
                 prevData[dataMapKey] === false ||
                 replace === true
               ) {
-                prevData[dataMapKey] = newData[dataMapKey];
+                if (newData[dataMapKey] !== "emptyObject") {
+                  prevData[dataMapKey] = newData[dataMapKey];
+                }
               } else {
                 prevData[dataMapKey] = UpdateObject(
                   prevData[dataMapKey],

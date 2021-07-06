@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import React from "react";
 import {
   getSetCache,
@@ -18,7 +19,6 @@ export default function useFetch({
   fetchMode,
   headers: propsHeader,
 }) {
-  const [controller] = React.useState(new AbortController());
   const [data, setData] = React.useState();
   const [error, setError] = React.useState();
   const [loading, setLoading] = React.useState(false);
@@ -69,7 +69,6 @@ export default function useFetch({
         authorization: token.get() ? `Bearer ${token.get()}` : "",
         ...headers,
       }),
-      signal: controller.signal,
     };
 
     if (localMethod !== "GET") {
@@ -168,7 +167,6 @@ export default function useFetch({
   React.useEffect(() => {
     return () => {
       state.active = false;
-      controller.abort();
     };
     // eslint-disable-next-line
   }, []);
